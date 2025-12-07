@@ -32,9 +32,24 @@ if (isset($_POST['add_treatment'])) {
     $name = $_POST['name'];
     $price = $_POST['price'];
     $duration = $_POST['duration'];
+    $image = null;
 
-    $stmt = $pdo->prepare("INSERT INTO treatments (name, price, duration) VALUES (?, ?, ?)");
-    $stmt->execute([$name, $price, $duration]);
+    // Handle image upload
+    if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
+        $image_name = time() . '_' . basename($_FILES['image']['name']);
+        $image_path = '../assets/uploads/' . $image_name;
+        
+        // Validasi tipe file
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (in_array($_FILES['image']['type'], $allowed_types)) {
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
+                $image = $image_name;
+            }
+        }
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO treatments (name, price, duration, image) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$name, $price, $duration, $image]);
     echo "<script>alert('Treatment berhasil ditambahkan!'); window.location='admin.php?page=treatments';</script>";
 }
 
@@ -44,8 +59,32 @@ if (isset($_POST['edit_treatment'])) {
     $price = $_POST['price'];
     $duration = $_POST['duration'];
 
-    $stmt = $pdo->prepare("UPDATE treatments SET name=?, price=?, duration=? WHERE id=?");
-    $stmt->execute([$name, $price, $duration, $id]);
+    // Get current image
+    $stmt = $pdo->prepare("SELECT image FROM treatments WHERE id=?");
+    $stmt->execute([$id]);
+    $current = $stmt->fetch();
+    $image = $current['image'];
+
+    // Handle image upload
+    if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
+        $image_name = time() . '_' . basename($_FILES['image']['name']);
+        $image_path = '../assets/uploads/' . $image_name;
+        
+        // Validasi tipe file
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (in_array($_FILES['image']['type'], $allowed_types)) {
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
+                // Delete old image
+                if ($current['image'] && file_exists('../assets/uploads/' . $current['image'])) {
+                    unlink('../assets/uploads/' . $current['image']);
+                }
+                $image = $image_name;
+            }
+        }
+    }
+
+    $stmt = $pdo->prepare("UPDATE treatments SET name=?, price=?, duration=?, image=? WHERE id=?");
+    $stmt->execute([$name, $price, $duration, $image, $id]);
     echo "<script>alert('Treatment berhasil diupdate!'); window.location='admin.php?page=treatments';</script>";
 }
 
@@ -99,49 +138,97 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
     <title>Admin Dashboard - Beautybar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        function openModal() {
-            document.getElementById('treatmentModal').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = '➕ Tambah Treatment Baru';
-            document.getElementById('treatmentForm').reset();
-            document.getElementById('treatmentId').value = '';
-            document.getElementById('submitBtn').name = 'add_treatment';
-            document.getElementById('submitBtn').textContent = '➕ Tambah Treatment';
+    function openModal() {
+        document.getElementById('treatmentModal').classList.remove('hidden');
+        document.getElementById('modalTitle').textContent = '➕ Tambah Treatment Baru';
+        document.getElementById('treatmentForm').reset();
+        document.getElementById('treatmentId').value = '';
+        document.getElementById('submitBtn').name = 'add_treatment';
+        document.getElementById('submitBtn').textContent = '➕ Tambah Treatment';
+        document.getElementById('imagePreview').classList.add('hidden');
+        document.getElementById('treatmentImage').value = '';
+    }
+
+    function closeModal() {
+        document.getElementById('treatmentModal').classList.add('hidden');
+    }
+
+    function editTreatment(id, name, price, duration) {
+        document.getElementById('treatmentModal').classList.remove('hidden');
+        document.getElementById('modalTitle').textContent = '✏️ Edit Treatment';
+        document.getElementById('treatmentId').value = id;
+        document.getElementById('treatmentName').value = name;
+        document.getElementById('treatmentPrice').value = price;
+        document.getElementById('treatmentDuration').value = duration;
+        document.getElementById('submitBtn').name = 'edit_treatment';
+        document.getElementById('submitBtn').textContent = '💾 Update Treatment';
+    }
+
+    // Image preview handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageInput = document.getElementById('treatmentImage');
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('previewImg').src = event.target.result;
+                        document.getElementById('imagePreview').classList.remove('hidden');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
         }
 
-        function closeModal() {
-            document.getElementById('treatmentModal').classList.add('hidden');
+        // Drag and drop
+        const fileInput = document.getElementById('treatmentImage');
+        const dropZone = fileInput?.parentElement;
+
+        if (dropZone) {
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.parentElement.classList.add('bg-purple-100');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.parentElement.classList.remove('bg-purple-100');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.parentElement.classList.remove('bg-purple-100');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    const event = new Event('change', {
+                        bubbles: true
+                    });
+                    fileInput.dispatchEvent(event);
+                }
+            });
         }
+    });
 
-        function editTreatment(id, name, price, duration) {
-            document.getElementById('treatmentModal').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = '✏️ Edit Treatment';
-            document.getElementById('treatmentId').value = id;
-            document.getElementById('treatmentName').value = name;
-            document.getElementById('treatmentPrice').value = price;
-            document.getElementById('treatmentDuration').value = duration;
-            document.getElementById('submitBtn').name = 'edit_treatment';
-            document.getElementById('submitBtn').textContent = '💾 Update Treatment';
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('treatmentModal');
+        if (event.target === modal) {
+            closeModal();
         }
+    });
 
-        // Close modal when clicking outside
-        document.addEventListener('click', function (event) {
-            const modal = document.getElementById('treatmentModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Auto open modal if edit parameter exists
-        window.addEventListener('load', function () {
-            <?php if ($edit_treatment): ?>
-                editTreatment(
-                    <?php echo $edit_treatment['id']; ?>,
-                    "<?php echo addslashes($edit_treatment['name']); ?>",
-                    <?php echo $edit_treatment['price']; ?>,
-                    <?php echo $edit_treatment['duration']; ?>
-                );
-            <?php endif; ?>
-        });
+    // Auto open modal if edit parameter exists
+    window.addEventListener('load', function() {
+        <?php if ($edit_treatment): ?>
+        editTreatment(
+            <?php echo $edit_treatment['id']; ?>,
+            "<?php echo addslashes($edit_treatment['name']); ?>",
+            <?php echo $edit_treatment['price']; ?>,
+            <?php echo $edit_treatment['duration']; ?>
+        );
+        <?php endif; ?>
+    });
     </script>
 </head>
 
@@ -167,7 +254,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                     <span class="mr-3">📊</span>
                     <span>Dashboard</span>
                 </a>
-                
+
                 <a href="admin.php?page=bookings"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $page == 'bookings' ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100'; ?>">
                     <span class="mr-3">📅</span>
@@ -219,26 +306,26 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
 
             <?php if ($page == 'bookings'): ?>
 
-                <!-- Bookings Page -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50 border-b">
-                                <tr>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Member &
-                                        Treatment</th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Jadwal
-                                    </th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Status
-                                    </th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Pembayaran
-                                    </th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <?php
+            <!-- Bookings Page -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Member &
+                                    Treatment</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Jadwal
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Status
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Pembayaran
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <?php
                                 $sql = "SELECT b.*, u.username, t.name as treat, tr.proof_image, tr.payment_status 
                                     FROM bookings b
                                     JOIN users u ON b.user_id=u.id
@@ -303,100 +390,133 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                 </tr>";
                                 }
                                 ?>
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
             <?php elseif ($page == 'treatments'): ?>
 
-                <!-- Treatments Page -->
-                <!-- Button Tambah Treatment -->
-                <div class="mb-6">
-                    <button onclick="openModal()"
-                        class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-md">
-                        ➕ Tambah Treatment Baru
-                    </button>
-                </div>
+            <!-- Treatments Page -->
+            <!-- Button Tambah Treatment -->
+            <div class="mb-6">
+                <button onclick="openModal()"
+                    class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-md">
+                    ➕ Tambah Treatment Baru
+                </button>
+            </div>
 
-                <!-- Modal Tambah/Edit Treatment -->
-                <div id="treatmentModal"
-                    class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-                    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
-                        <div class="flex items-center justify-between p-6 border-b">
-                            <h3 id="modalTitle" class="text-xl font-semibold text-gray-800">
-                                ➕ Tambah Treatment Baru
-                            </h3>
-                            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
+            <!-- Modal Tambah/Edit Treatment -->
+            <div id="treatmentModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+                    <div class="flex items-center justify-between p-6 border-b">
+                        <h3 id="modalTitle" class="text-xl font-semibold text-gray-800">
+                            ➕ Tambah Treatment Baru
+                        </h3>
+                        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
 
-                        <form method="POST" id="treatmentForm" class="p-6">
-                            <input type="hidden" id="treatmentId" name="id" value="">
+                    <form method="POST" id="treatmentForm" class="p-6" enctype="multipart/form-data">
+                        <input type="hidden" id="treatmentId" name="id" value="">
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Treatment</label>
-                                    <input type="text" id="treatmentName" name="name"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                        required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Harga (Rp)</label>
-                                    <input type="number" id="treatmentPrice" name="price"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Menit)</label>
-                                <input type="number" id="treatmentDuration" name="duration" value="60"
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Treatment</label>
+                                <input type="text" id="treatmentName" name="name"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                     required>
                             </div>
-
-                            <div class="flex gap-2 justify-end">
-                                <button type="button" onclick="closeModal()"
-                                    class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
-                                    Batal
-                                </button>
-                                <button type="submit" id="submitBtn" name="add_treatment"
-                                    class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium">
-                                    ➕ Tambah Treatment
-                                </button>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Harga (Rp)</label>
+                                <input type="number" id="treatmentPrice" name="price"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                    required>
                             </div>
-                        </form>
-                    </div>
-                </div>
+                        </div>
 
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="px-6 py-4 border-b">
-                        <h3 class="text-lg font-semibold text-gray-800">Daftar Treatment</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Nama
-                                        Treatment</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Harga</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Durasi
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <?php
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Menit)</label>
+                            <input type="number" id="treatmentDuration" name="duration" value="60"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                required>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Treatment</label>
+                            <div class="flex items-center justify-center w-full">
+                                <label
+                                    class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-purple-300 rounded-lg cursor-pointer bg-purple-50 hover:bg-purple-100">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg class="w-8 h-8 text-purple-500 mb-2" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        <p class="text-sm text-gray-600"><span class="font-semibold">Klik untuk
+                                                upload</span> atau drag gambar</p>
+                                        <p class="text-xs text-gray-500 mt-1">JPG, PNG atau GIF (Max. 5MB)</p>
+                                    </div>
+                                    <input id="treatmentImage" name="image" type="file" class="hidden" accept="image/*">
+                                </label>
+                            </div>
+                            <div id="imagePreview" class="mt-4 hidden">
+                                <img id="previewImg" src="" alt="Preview" class="h-32 object-contain rounded-lg">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 justify-end">
+                            <button type="button" onclick="closeModal()"
+                                class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
+                                Batal
+                            </button>
+                            <button type="submit" id="submitBtn" name="add_treatment"
+                                class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium">
+                                ➕ Tambah Treatment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-semibold text-gray-800">Daftar Treatment</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Gambar
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Nama
+                                    Treatment</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Harga</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Durasi
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <?php
                                 $treatments = $pdo->query("SELECT * FROM treatments ORDER BY id DESC");
                                 while ($t = $treatments->fetch()) {
+                                    $image_html = '';
+                                    if ($t['image']) {
+                                        $image_html = "<img src='../assets/uploads/{$t['image']}' alt='{$t['name']}' class='h-16 w-16 object-cover rounded'>";
+                                    } else {
+                                        $image_html = "<div class='h-16 w-16 bg-purple-100 rounded flex items-center justify-center text-purple-600 font-bold'>" . substr($t['name'], 0, 1) . "</div>";
+                                    }
+                                    
                                     echo "<tr class='hover:bg-gray-50'>
                                     <td class='px-6 py-4 text-sm text-gray-900'>#{$t['id']}</td>
+                                    <td class='px-6 py-4 text-sm'>{$image_html}</td>
                                     <td class='px-6 py-4 text-sm font-medium text-gray-900'>{$t['name']}</td>
                                     <td class='px-6 py-4 text-sm text-gray-900'>Rp " . number_format($t['price']) . "</td>
                                     <td class='px-6 py-4 text-sm text-gray-900'>{$t['duration']} menit</td>
@@ -414,33 +534,33 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                 </tr>";
                                 }
                                 ?>
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
             <?php elseif ($page == 'members'): ?>
 
-                <!-- Members Page -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="px-6 py-4 border-b">
-                        <h3 class="text-lg font-semibold text-gray-800">Daftar Member</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Nama
-                                        Member</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Email</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Tanggal
-                                        Bergabung</th>
-                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <?php
+            <!-- Members Page -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-semibold text-gray-800">Daftar Member</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Nama
+                                    Member</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Tanggal
+                                    Bergabung</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <?php
                                 $members = $pdo->query("SELECT * FROM users WHERE role='member' ORDER BY created_at DESC");
 
                                 if ($members->rowCount() > 0) {
@@ -472,10 +592,10 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                 </tr>";
                                 }
                                 ?>
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
             <?php endif; ?>
         </main>

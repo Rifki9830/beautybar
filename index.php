@@ -7,73 +7,253 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beautybar.bync - Salon Kecantikan Terbaik</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
+    <!-- Navigation -->
     <nav class="navbar">
-        <div class="brand">Beautybar.bync</div>
-        <div>
-            <a href="index.php">Home</a>
-            <a href="#treatments">Treatment</a>
-            <?php if(isset($_SESSION['user_id'])): ?>
-            <a href="dashboard/member.php" style="color:var(--primary);">Dashboard Saya</a>
-            <a href="logout.php" class="btn-login" style="background: #555;">Logout</a>
-            <?php else: ?>
-            <a href="login.php">Login</a>
-            <a href="register.php" class="btn-login">Daftar</a>
-            <?php endif; ?>
+        <div class="container">
+            <div class="navbar-brand">
+                <i class="fas fa-spa"></i>
+                <span>Beautybar.bync</span>
+            </div>
+            <div class="navbar-menu">
+                <a href="index.php" class="active">Home</a>
+                <a href="#treatments">Treatment</a>
+                <?php if(isset($_SESSION['user_id'])): ?>
+                <a href="dashboard/member.php">Dashboard</a>
+                <a href="logout.php" class="btn btn-outline">Logout</a>
+                <?php else: ?>
+                <a href="login.php">Login</a>
+                <a href="register.php" class="btn btn-primary">Daftar</a>
+                <?php endif; ?>
+            </div>
+            <div class="mobile-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
-    <header class="hero">
-        <h1>Welcome to Beautybar.bync</h1>
-        <p>Manjakan dirimu dengan sentuhan profesional dan treatment terbaik di Bandar Lampung.</p>
-        <p style="font-size: 1rem; opacity: 0.9;">
-            📍 JL. Mayor Sukardi Hamdani Palapa 10, Rajabasa <br>
-            ⏰ Buka Setiap Hari: 09.00 - 21.00 WIB
-        </p>
-        <a href="login.php" class="btn-main">Booking Sekarang</a>
-    </header>
-
-    <div class="container" id="treatments">
-        <h2 class="section-title">Pilihan Treatment Kami</h2>
-
-        <div class="grid">
-            <?php
-            $stmt = $pdo->query("SELECT * FROM treatments");
-            while ($row = $stmt->fetch()) {
-                // Mengambil inisial nama treatment untuk gambar dummy
-                $initial = substr($row['name'], 0, 1);
-            ?>
-            <div class='card'>
-                <div class="card-img">
-                    <?php echo $initial; ?>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Transform Your Beauty Experience</h1>
+                <p class="hero-subtitle">Nikmati perawatan kecantikan premium dengan sentuhan profesional di Bandar
+                    Lampung</p>
+                <div class="hero-buttons">
+                    <a href="login.php" class="btn btn-primary">Booking Sekarang</a>
+                    <a href="#treatments" class="btn btn-outline">Lihat Layanan</a>
                 </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-image-container">
+                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                        alt="Beauty Treatment">
+                </div>
+            </div>
+        </div>
+        <div class="hero-info">
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>JL. Mayor Sukardi Hamdani Palapa 10, Rajabasa</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <span>Buka Setiap Hari: 09.00 - 21.00 WIB</span>
+            </div>
+        </div>
+    </section>
 
-                <div class="card-body">
-                    <h3><?php echo htmlspecialchars($row['name']); ?></h3>
-                    <span class="price">Rp <?php echo number_format($row['price']); ?></span>
-                    <br>
-                    <span class="duration">⏱ <?php echo $row['duration']; ?> Menit</span>
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Mengapa Memilih Kami</h2>
+                <p class="section-subtitle">Kami memberikan pengalaman kecantikan terbaik untuk Anda</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Therapis Profesional</h3>
+                    <p>Dilayani oleh tenaga ahli berpengalaman di bidang kecantikan</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>Perawatan Premium</h3>
+                    <p>Produk berkualitas tinggi untuk hasil terbaik bagi kulit Anda</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Pelayanan Terbaik</h3>
+                    <p>Kenyamanan dan kepuasan pelanggan adalah prioritas utama kami</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    <div style="margin-top: 20px;">
-                        <a href="login.php" style="color: var(--primary); font-weight:600; font-size:0.9rem;">
-                            Booking Layanan Ini &rarr;
-                        </a>
+    <!-- Treatments Section -->
+    <section class="treatments" id="treatments">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Pilihan Treatment Kami</h2>
+                <p class="section-subtitle">Nikmati berbagai perawatan kecantikan dengan harga terjangkau</p>
+            </div>
+            <div class="treatments-grid">
+                <?php
+                $stmt = $pdo->query("SELECT * FROM treatments");
+                while ($row = $stmt->fetch()) {
+                    // Mengambil inisial nama treatment untuk gambar fallback
+                    $initial = substr($row['name'], 0, 1);
+                    $image_src = $row['image'] ? 'assets/uploads/' . htmlspecialchars($row['image']) : '';
+                ?>
+                <div class="treatment-card">
+                    <div class="treatment-image">
+                        <?php if ($image_src): ?>
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($row['name']); ?>" class="treatment-img">
+                        <?php else: ?>
+                            <div class="treatment-icon"><?php echo $initial; ?></div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="treatment-content">
+                        <h3><?php echo htmlspecialchars($row['name']); ?></h3>
+                        <div class="treatment-meta">
+                            <span class="price">Rp <?php echo number_format($row['price']); ?></span>
+                            <span class="duration"><i class="fas fa-hourglass-half"></i> <?php echo $row['duration']; ?>
+                                Menit</span>
+                        </div>
+                        <a href="login.php" class="btn btn-primary btn-block">Booking Sekarang</a>
+                    </div>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Apa Kata Mereka</h2>
+                <p class="section-subtitle">Testimoni dari pelanggan setia kami</p>
+            </div>
+            <div class="testimonials-slider">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Pelayanan sangat memuaskan, hasil treatment sesuai dengan ekspektasi. Therapis ramah dan
+                            profesional."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Customer">
+                        </div>
+                        <div class="author-info">
+                            <h4>Siti Nurhaliza</h4>
+                            <p>Pelanggan Setia</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Tempatnya nyaman, bersih, dan harganya terjangkau. Saya sudah menjadi pelanggan di sini
+                            selama 2 tahun."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Customer">
+                        </div>
+                        <div class="author-info">
+                            <h4>Budi Santoso</h4>
+                            <p>Pelanggan Setia</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Treatment di sini selalu membuat saya merasa segar dan percaya diri. Highly recommended!"
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Customer">
+                        </div>
+                        <div class="author-info">
+                            <h4>Dewi Lestari</h4>
+                            <p>Pelanggan Setia</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <?php } ?>
         </div>
-    </div>
+    </section>
 
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Siap untuk Tampil Cantik?</h2>
+                <p>Booking treatment sekarang dan dapatkan penawaran spesial untuk kunjungan pertama Anda</p>
+                <a href="login.php" class="btn btn-light">Booking Sekarang</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer class="footer">
-        <h3>Beautybar.bync</h3>
-        <p>Your Beauty, Our Priority.</p>
-        <br>
-        <p>&copy; <?php echo date('Y'); ?> Beautybar.bync. All Rights Reserved.</p>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-spa"></i>
+                        <span>Beautybar.bync</span>
+                    </div>
+                    <p>Your Beauty, Our Priority.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.php">Home</a></li>
+                        <li><a href="#treatments">Treatment</a></li>
+                        <li><a href="login.php">Login</a></li>
+                        <li><a href="register.php">Register</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> JL. Mayor Sukardi Hamdani Palapa 10, Rajabasa</li>
+                        <li><i class="fas fa-phone"></i> (0721) 123456</li>
+                        <li><i class="fas fa-envelope"></i> info@beautybar.bync</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <?php echo date('Y'); ?> Beautybar.bync. All Rights Reserved.</p>
+            </div>
+        </div>
     </footer>
 
+    <script>
+    // Mobile Menu Toggle
+    document.querySelector('.mobile-toggle').addEventListener('click', function() {
+        document.querySelector('.navbar-menu').classList.toggle('active');
+    });
+    </script>
 </body>
 
 </html>
