@@ -87,29 +87,52 @@ if (isset($_POST['booking'])) {
                 </form>
             </div>
 
-            <h3>Riwayat Booking Saya</h3>
+            <h3>Riwayat & Pembayaran</h3>
             <table>
                 <tr>
-                    <th>Tanggal</th>
-                    <th>Jam</th>
                     <th>Treatment</th>
-                    <th>Terapis</th>
-                    <th>Status</th>
+                    <th>Jadwal</th>
+                    <th>Status Booking</th>
+                    <th>Pembayaran</th>
+                    <th>Aksi</th>
                 </tr>
                 <?php
-                $hist = $pdo->prepare("SELECT b.*, t.name as tname, th.name as thname FROM bookings b 
+                // Query Join ke Transactions dan Surveys untuk cek status
+                $hist = $pdo->prepare("SELECT b.*, t.name as tname, t.price, s.id as survey_id 
+                                       FROM bookings b 
                                        JOIN treatments t ON b.treatment_id=t.id 
-                                       JOIN therapists th ON b.therapist_id=th.id 
+                                       LEFT JOIN surveys s ON b.id = s.booking_id
                                        WHERE b.user_id=? ORDER BY b.id DESC");
                 $hist->execute([$_SESSION['user_id']]);
+                
                 while($h = $hist->fetch()) {
-                    $badge = $h['status'] == 'confirmed' ? 'bg-confirmed' : 'bg-pending';
+                    $badge = $h['status'] == 'confirmed' ? 'bg-confirmed' : ($h['status'] == 'cancelled' ? 'bg-cancelled' : 'bg-pending');
+                    
                     echo "<tr>
-                        <td>{$h['booking_date']}</td>
-                        <td>{$h['booking_time']}</td>
-                        <td>{$h['tname']}</td>
-                        <td>{$h['thname']}</td>
+                        <td>{$h['tname']} <br> <b>Rp ".number_format($h['price'])."</b></td>
+                        <td>{$h['booking_date']} <br> {$h['booking_time']}</td>
                         <td><span class='badge $badge'>{$h['status']}</span></td>
+                        <td>";
+                            // Logika Pembayaran
+                            if($h['is_paid'] == 1) {
+                                echo "<span style='color:green;'>✔ Lunas</span>";
+                            } else {
+                                echo "<span style='color:red;'>Belum Bayar</span>";
+                            }
+                    echo "</td>
+                        <td>";
+                            // Tombol Bayar (Jika belum lunas & status confirmed)
+                            if($h['status'] == 'confirmed' && $h['is_paid'] == 0) {
+                                echo "<a href='pay.php?id={$h['id']}&amount={$h['price']}' class='badge' style='background:#007bff;'>Bayar Sekarang</a> ";
+                            }
+                            
+                            // Tombol Survei (Jika sudah bayar/selesai & belum isi survei)
+                            if(($h['status'] == 'completed' || $h['is_paid'] == 1) && !$h['survey_id']) {
+                                echo "<a href='survey.php?id={$h['id']}' class='badge' style='background:#d63384;'>Isi Survei</a>";
+                            } elseif($h['survey_id']) {
+                                echo "<small>Survei Terkirim</small>";
+                            }
+                    echo "</td>
                     </tr>";
                 }
                 ?>
