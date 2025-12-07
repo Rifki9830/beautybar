@@ -93,19 +93,22 @@ if (isset($_POST['booking'])) {
                     <th>Treatment</th>
                     <th>Jadwal</th>
                     <th>Status Booking</th>
-                    <th>Pembayaran</th>
+                    <th>Status Bayar</th>
                     <th>Aksi</th>
                 </tr>
                 <?php
-                // Query Join ke Transactions dan Surveys untuk cek status
-                $hist = $pdo->prepare("SELECT b.*, t.name as tname, t.price, s.id as survey_id 
+                // Join ke transactions untuk ambil status bayar
+                $hist = $pdo->prepare("SELECT b.*, t.name as tname, t.price, 
+                                       tr.payment_status, tr.proof_image, s.id as survey_id 
                                        FROM bookings b 
                                        JOIN treatments t ON b.treatment_id=t.id 
+                                       LEFT JOIN transactions tr ON b.id = tr.booking_id
                                        LEFT JOIN surveys s ON b.id = s.booking_id
                                        WHERE b.user_id=? ORDER BY b.id DESC");
                 $hist->execute([$_SESSION['user_id']]);
                 
                 while($h = $hist->fetch()) {
+                    // Badge Status Booking
                     $badge = $h['status'] == 'confirmed' ? 'bg-confirmed' : ($h['status'] == 'cancelled' ? 'bg-cancelled' : 'bg-pending');
                     
                     echo "<tr>
@@ -113,24 +116,29 @@ if (isset($_POST['booking'])) {
                         <td>{$h['booking_date']} <br> {$h['booking_time']}</td>
                         <td><span class='badge $badge'>{$h['status']}</span></td>
                         <td>";
-                            // Logika Pembayaran
+                            // LOGIKA STATUS PEMBAYARAN
                             if($h['is_paid'] == 1) {
-                                echo "<span style='color:green;'>✔ Lunas</span>";
+                                echo "<span style='color:green; font-weight:bold;'>✔ Lunas</span>";
+                            } elseif ($h['payment_status'] == 'pending') {
+                                echo "<span style='color:orange; font-weight:bold;'>⏳ Menunggu Konfirmasi</span>";
                             } else {
                                 echo "<span style='color:red;'>Belum Bayar</span>";
                             }
                     echo "</td>
                         <td>";
-                            // Tombol Bayar (Jika belum lunas & status confirmed)
+                            // TOMBOL AKSI
                             if($h['status'] == 'confirmed' && $h['is_paid'] == 0) {
-                                echo "<a href='pay.php?id={$h['id']}&amount={$h['price']}' class='badge' style='background:#007bff;'>Bayar Sekarang</a> ";
+                                if($h['payment_status'] == 'pending') {
+                                    echo "<small>Sedang dicek admin</small>";
+                                } else {
+                                    // Link ke form upload payment.php
+                                    echo "<a href='payment.php?id={$h['id']}&amount={$h['price']}' class='badge' style='background:#007bff;'>Bayar Sekarang</a>";
+                                }
                             }
                             
-                            // Tombol Survei (Jika sudah bayar/selesai & belum isi survei)
+                            // Tombol Survei
                             if(($h['status'] == 'completed' || $h['is_paid'] == 1) && !$h['survey_id']) {
-                                echo "<a href='survey.php?id={$h['id']}' class='badge' style='background:#d63384;'>Isi Survei</a>";
-                            } elseif($h['survey_id']) {
-                                echo "<small>Survei Terkirim</small>";
+                                echo "<a href='survey.php?id={$h['id']}' class='badge' style='background:#d63384; margin-left:5px;'>Isi Survei</a>";
                             }
                     echo "</td>
                     </tr>";
