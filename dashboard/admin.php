@@ -5,28 +5,21 @@ checkAccess('admin');
 // ==========================================
 // 1. LOGIC MENANGANI BOOKING & PEMBAYARAN
 // ==========================================
-if(isset($_GET['action']) && isset($_GET['id'])) {
+if (isset($_GET['action']) && isset($_GET['id'])) {
     $id = $_GET['id'];
     $act = $_GET['action'];
-    
-    // Konfirmasi Booking (Terima)
-    if($act == 'approve') {
+
+    if ($act == 'approve') {
         $pdo->prepare("UPDATE bookings SET status='confirmed' WHERE id=?")->execute([$id]);
-    }
-    // Tolak Booking
-    elseif($act == 'reject') {
+    } elseif ($act == 'reject') {
         $pdo->prepare("UPDATE bookings SET status='cancelled' WHERE id=?")->execute([$id]);
-    }
-    // Selesai Treatment
-    elseif($act == 'complete') {
+    } elseif ($act == 'complete') {
         $pdo->prepare("UPDATE bookings SET status='completed' WHERE id=?")->execute([$id]);
-    }
-    // VALIDASI PEMBAYARAN
-    elseif($act == 'confirm_pay') {
+    } elseif ($act == 'confirm_pay') {
         $pdo->prepare("UPDATE bookings SET is_paid=1 WHERE id=?")->execute([$id]);
         $pdo->prepare("UPDATE transactions SET payment_status='paid' WHERE booking_id=?")->execute([$id]);
     }
-    
+
     header("Location: admin.php?page=bookings");
     exit;
 }
@@ -35,31 +28,28 @@ if(isset($_GET['action']) && isset($_GET['id'])) {
 // 2. LOGIC CRUD TREATMENT
 // ==========================================
 
-// Create
-if(isset($_POST['add_treatment'])) {
+if (isset($_POST['add_treatment'])) {
     $name = $_POST['name'];
     $price = $_POST['price'];
     $duration = $_POST['duration'];
-    
+
     $stmt = $pdo->prepare("INSERT INTO treatments (name, price, duration) VALUES (?, ?, ?)");
     $stmt->execute([$name, $price, $duration]);
     echo "<script>alert('Treatment berhasil ditambahkan!'); window.location='admin.php?page=treatments';</script>";
 }
 
-// Update
-if(isset($_POST['edit_treatment'])) {
+if (isset($_POST['edit_treatment'])) {
     $id = $_POST['id'];
     $name = $_POST['name'];
     $price = $_POST['price'];
     $duration = $_POST['duration'];
-    
+
     $stmt = $pdo->prepare("UPDATE treatments SET name=?, price=?, duration=? WHERE id=?");
     $stmt->execute([$name, $price, $duration, $id]);
     echo "<script>alert('Treatment berhasil diupdate!'); window.location='admin.php?page=treatments';</script>";
 }
 
-// Delete
-if(isset($_GET['delete_treatment'])) {
+if (isset($_GET['delete_treatment'])) {
     $id = $_GET['delete_treatment'];
     try {
         $pdo->prepare("DELETE FROM treatments WHERE id=?")->execute([$id]);
@@ -69,23 +59,19 @@ if(isset($_GET['delete_treatment'])) {
     }
 }
 
-// Ambil data treatment untuk edit
 $edit_treatment = null;
-if(isset($_GET['edit'])) {
+if (isset($_GET['edit'])) {
     $stmt = $pdo->prepare("SELECT * FROM treatments WHERE id=?");
     $stmt->execute([$_GET['edit']]);
     $edit_treatment = $stmt->fetch();
 }
 
 // ==========================================
-// 3. LOGIC KELOLA MEMBER (BARU)
+// 3. LOGIC KELOLA MEMBER
 // ==========================================
 
-// Hapus Member
-if(isset($_GET['delete_member'])) {
+if (isset($_GET['delete_member'])) {
     $mid = $_GET['delete_member'];
-    // Hapus data member (Hati-hati, ini akan error jika member punya history booking)
-    // Sebaiknya gunakan try-catch atau hapus history dulu. Di sini kita pakai Try-Catch.
     try {
         $pdo->prepare("DELETE FROM users WHERE id=? AND role='member'")->execute([$mid]);
         echo "<script>alert('Member berhasil dihapus!'); window.location='admin.php?page=members';</script>";
@@ -94,294 +80,405 @@ if(isset($_GET['delete_member'])) {
     }
 }
 
-// Reset Password Member
-if(isset($_GET['reset_member'])) {
+if (isset($_GET['reset_member'])) {
     $mid = $_GET['reset_member'];
-    // Reset password jadi "password"
     $new_pass = password_hash('password', PASSWORD_DEFAULT);
     $pdo->prepare("UPDATE users SET password=? WHERE id=?")->execute([$new_pass, $mid]);
     echo "<script>alert('Password berhasil direset menjadi: password'); window.location='admin.php?page=members';</script>";
 }
 
-// Tentukan halaman aktif (Default: bookings)
 $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Beautybar</title>
-    <link rel="stylesheet" href="../style.css">
-    <style>
-    .tab-menu {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 30px;
-        border-bottom: 2px solid #eee;
-        padding-bottom: 10px;
-    }
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function openModal() {
+            document.getElementById('treatmentModal').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = '➕ Tambah Treatment Baru';
+            document.getElementById('treatmentForm').reset();
+            document.getElementById('treatmentId').value = '';
+            document.getElementById('submitBtn').name = 'add_treatment';
+            document.getElementById('submitBtn').textContent = '➕ Tambah Treatment';
+        }
 
-    .tab-menu a {
-        padding: 10px 20px;
-        background: #f8f9fa;
-        border-radius: 8px 8px 0 0;
-        font-weight: 500;
-        color: var(--gray);
-        text-decoration: none;
-    }
+        function closeModal() {
+            document.getElementById('treatmentModal').classList.add('hidden');
+        }
 
-    .tab-menu a.active {
-        background: var(--primary);
-        color: white;
-    }
+        function editTreatment(id, name, price, duration) {
+            document.getElementById('treatmentModal').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = '✏️ Edit Treatment';
+            document.getElementById('treatmentId').value = id;
+            document.getElementById('treatmentName').value = name;
+            document.getElementById('treatmentPrice').value = price;
+            document.getElementById('treatmentDuration').value = duration;
+            document.getElementById('submitBtn').name = 'edit_treatment';
+            document.getElementById('submitBtn').textContent = '💾 Update Treatment';
+        }
 
-    .tab-menu a:hover {
-        background: var(--primary-dark);
-        color: white;
-    }
+        // Close modal when clicking outside
+        document.addEventListener('click', function (event) {
+            const modal = document.getElementById('treatmentModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
 
-    .form-inline {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-    }
-
-    .btn-small {
-        padding: 6px 12px;
-        border-radius: 5px;
-        font-size: 0.85rem;
-        display: inline-block;
-        margin-right: 5px;
-        color: white;
-        text-decoration: none;
-        cursor: pointer;
-        border: none;
-    }
-
-    .btn-primary {
-        background: var(--primary);
-    }
-
-    .btn-danger {
-        background: #dc3545;
-    }
-
-    .btn-success {
-        background: #28a745;
-    }
-
-    .btn-warning {
-        background: #f39c12;
-    }
-
-    .btn-purple {
-        background: #8e44ad;
-    }
-
-    .btn-info {
-        background: #17a2b8;
-    }
-
-    .btn-small:hover {
-        opacity: 0.9;
-    }
-    </style>
+        // Auto open modal if edit parameter exists
+        window.addEventListener('load', function () {
+            <?php if ($edit_treatment): ?>
+                editTreatment(
+                    <?php echo $edit_treatment['id']; ?>,
+                    "<?php echo addslashes($edit_treatment['name']); ?>",
+                    <?php echo $edit_treatment['price']; ?>,
+                    <?php echo $edit_treatment['duration']; ?>
+                );
+            <?php endif; ?>
+        });
+    </script>
 </head>
 
-<body>
-    <div class="dash-container">
-        <div class="sidebar">
-            <h3>Admin Panel</h3>
-            <p>Halo, <?php echo $_SESSION['name'] ?? 'Admin'; ?></p>
-            <hr>
-            <a href="admin.php?page=bookings" class="<?php echo $page=='bookings'?'active':''; ?>">Kelola Booking</a>
-            <a href="admin.php?page=treatments" class="<?php echo $page=='treatments'?'active':''; ?>">Kelola
-                Treatment</a>
-            <a href="admin.php?page=members" class="<?php echo $page=='members'?'active':''; ?>">Kelola Member</a>
-            <hr>
-            <a href="../index.php">Halaman Utama</a>
-            <a href="../logout.php">Logout</a>
-        </div>
-
-        <div class="main">
-            <div class="tab-menu">
-                <a href="admin.php?page=bookings" class="<?php echo $page=='bookings'?'active':''; ?>">Daftar
-                    Booking</a>
-                <a href="admin.php?page=treatments" class="<?php echo $page=='treatments'?'active':''; ?>">Kelola
-                    Treatment</a>
-                <a href="admin.php?page=members" class="<?php echo $page=='members'?'active':''; ?>">Kelola Member</a>
+<body class="bg-gray-100">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-purple-600">Beautybar</h2>
+                <p class="text-sm text-gray-500 mt-1">Admin Panel</p>
             </div>
 
-            <?php if($page == 'bookings'): ?>
-
-            <h2>Daftar Booking & Validasi Pembayaran</h2>
-            <div class="card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Member & Treatment</th>
-                            <th>Jadwal</th>
-                            <th>Status Booking</th>
-                            <th>Bukti Bayar</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $sql = "SELECT b.*, u.username, t.name as treat, tr.proof_image, tr.payment_status 
-                                FROM bookings b
-                                JOIN users u ON b.user_id=u.id
-                                JOIN treatments t ON b.treatment_id=t.id
-                                LEFT JOIN transactions tr ON b.id=tr.booking_id
-                                ORDER BY b.created_at DESC";
-                        $q = $pdo->query($sql);
-                        
-                        while($row = $q->fetch()){
-                            $st = $row['status'];
-                            $paySt = $row['payment_status'];
-                            $badgeClr = ($st=='confirmed')?'bg-confirmed':(($st=='cancelled')?'bg-cancelled':'bg-pending');
-
-                            echo "<tr>
-                                <td>#{$row['id']}</td>
-                                <td><strong>{$row['username']}</strong><br><small>{$row['treat']}</small></td>
-                                <td>{$row['booking_date']} <br> <b>{$row['booking_time']}</b></td>
-                                <td><span class='badge $badgeClr'>$st</span></td>
-                                <td>";
-                                    if($paySt == 'paid') {
-                                        echo "<span style='color:green; font-weight:bold;'>LUNAS ✔</span>";
-                                    } elseif($row['proof_image']) {
-                                        echo "<a href='../assets/uploads/{$row['proof_image']}' target='_blank' style='color:blue; text-decoration:underline;'>Lihat Foto</a>";
-                                        if($paySt == 'pending') echo "<br><small style='color:orange;'>Perlu Validasi</small>";
-                                    } else { echo "-"; }
-                            echo "</td>
-                                <td>";
-                                    if($st == 'pending'){
-                                        echo "<a href='?page=bookings&action=approve&id={$row['id']}' class='btn-small btn-success'>✓ Terima</a>
-                                              <a href='?page=bookings&action=reject&id={$row['id']}' class='btn-small btn-danger'>✗ Tolak</a>";
-                                    }
-                                    if($row['proof_image'] && $paySt == 'pending' && $st == 'confirmed'){
-                                        echo "<a href='?page=bookings&action=confirm_pay&id={$row['id']}' class='btn-small btn-purple'>💰 Validasi Bayar</a>";
-                                    }
-                                    if($st == 'confirmed' && $row['is_paid'] == 1){
-                                        echo "<a href='?page=bookings&action=complete&id={$row['id']}' class='btn-small btn-info'>✓ Selesai</a>";
-                                    }
-                                    if($st == 'completed' || $st == 'cancelled') { echo "<small style='color:#999;'>Arsip</small>"; }
-                            echo "</td></tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
+            <div class="px-4 py-2">
+                <div class="bg-purple-50 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-gray-600">Halo,</p>
+                    <p class="font-semibold text-gray-800"><?php echo $_SESSION['name'] ?? 'Admin'; ?></p>
+                </div>
             </div>
 
-            <?php elseif($page == 'treatments'): ?>
+            <nav class="px-4">
+                <a href="dashboard.php"
+                    class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $page == 'dashboard' ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100'; ?>">
+                    <span class="mr-3">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="admin.php?page=bookings"
+                    class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $page == 'bookings' ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100'; ?>">
+                    <span class="mr-3">📅</span>
+                    <span>Kelola Booking</span>
+                </a>
 
-            <h2>Kelola Treatment</h2>
-            <div class="card">
-                <h3><?php echo $edit_treatment ? 'Edit Treatment' : 'Tambah Treatment Baru'; ?></h3>
-                <form method="POST">
-                    <?php if($edit_treatment): ?><input type="hidden" name="id"
-                        value="<?php echo $edit_treatment['id']; ?>"><?php endif; ?>
-                    <div class="form-inline">
-                        <div><label>Nama Treatment</label><input type="text" name="name"
-                                value="<?php echo $edit_treatment ? htmlspecialchars($edit_treatment['name']) : ''; ?>"
-                                required></div>
-                        <div><label>Harga (Rp)</label><input type="number" name="price"
-                                value="<?php echo $edit_treatment ? $edit_treatment['price'] : ''; ?>" required></div>
+                <a href="admin.php?page=treatments"
+                    class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $page == 'treatments' ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100'; ?>">
+                    <span class="mr-3">💆</span>
+                    <span>Kelola Treatment</span>
+                </a>
+
+                <a href="admin.php?page=members"
+                    class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $page == 'members' ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100'; ?>">
+                    <span class="mr-3">👥</span>
+                    <span>Kelola Member</span>
+                </a>
+            </nav>
+
+            <div class="px-4 mt-8 pt-8 border-t">
+                <a href="../index.php"
+                    class="flex items-center px-4 py-3 mb-2 text-gray-700 rounded-lg hover:bg-gray-100">
+                    <span class="mr-3">🏠</span>
+                    <span>Halaman Utama</span>
+                </a>
+                <a href="../logout.php" class="flex items-center px-4 py-3 text-red-600 rounded-lg hover:bg-red-50">
+                    <span class="mr-3">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">
+                    <?php
+                    if ($page == 'bookings')
+                        echo 'Kelola Booking';
+                    elseif ($page == 'treatments')
+                        echo 'Kelola Treatment';
+                    elseif ($page == 'members')
+                        echo 'Kelola Member';
+                    ?>
+                </h1>
+                <p class="text-gray-500 mt-1">Kelola data dengan mudah</p>
+            </div>
+
+            <?php if ($page == 'bookings'): ?>
+
+                <!-- Bookings Page -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 border-b">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Member &
+                                        Treatment</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Jadwal
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Status
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Pembayaran
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <?php
+                                $sql = "SELECT b.*, u.username, t.name as treat, tr.proof_image, tr.payment_status 
+                                    FROM bookings b
+                                    JOIN users u ON b.user_id=u.id
+                                    JOIN treatments t ON b.treatment_id=t.id
+                                    LEFT JOIN transactions tr ON b.id=tr.booking_id
+                                    ORDER BY b.created_at DESC";
+                                $q = $pdo->query($sql);
+
+                                while ($row = $q->fetch()) {
+                                    $st = $row['status'];
+                                    $paySt = $row['payment_status'];
+
+                                    $statusColors = [
+                                        'pending' => 'bg-yellow-100 text-yellow-800',
+                                        'confirmed' => 'bg-green-100 text-green-800',
+                                        'cancelled' => 'bg-red-100 text-red-800',
+                                        'completed' => 'bg-blue-100 text-blue-800'
+                                    ];
+                                    $badgeClass = $statusColors[$st] ?? 'bg-gray-100 text-gray-800';
+
+                                    echo "<tr class='hover:bg-gray-50'>
+                                    <td class='px-6 py-4 text-sm font-medium text-gray-900'>#{$row['id']}</td>
+                                    <td class='px-6 py-4'>
+                                        <div class='text-sm font-medium text-gray-900'>{$row['username']}</div>
+                                        <div class='text-sm text-gray-500'>{$row['treat']}</div>
+                                    </td>
+                                    <td class='px-6 py-4'>
+                                        <div class='text-sm text-gray-900'>{$row['booking_date']}</div>
+                                        <div class='text-sm font-semibold text-purple-600'>{$row['booking_time']}</div>
+                                    </td>
+                                    <td class='px-6 py-4'>
+                                        <span class='px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full $badgeClass'>
+                                            $st
+                                        </span>
+                                    </td>
+                                    <td class='px-6 py-4'>";
+                                    if ($paySt == 'paid') {
+                                        echo "<span class='text-green-600 font-semibold'>✔ LUNAS</span>";
+                                    } elseif ($row['proof_image']) {
+                                        echo "<a href='../assets/uploads/{$row['proof_image']}' target='_blank' class='text-blue-600 hover:underline'>📷 Lihat Bukti</a>";
+                                        if ($paySt == 'pending')
+                                            echo "<br><span class='text-xs text-orange-500'>⏳ Perlu Validasi</span>";
+                                    } else {
+                                        echo "<span class='text-gray-400'>-</span>";
+                                    }
+                                    echo "</td>
+                                    <td class='px-6 py-4 text-sm'>";
+                                    if ($st == 'pending') {
+                                        echo "<a href='?page=bookings&action=approve&id={$row['id']}' class='inline-block px-3 py-1 mb-1 bg-green-500 text-white rounded hover:bg-green-600 mr-1'>✓ Terima</a>";
+                                        echo "<a href='?page=bookings&action=reject&id={$row['id']}' class='inline-block px-3 py-1 mb-1 bg-red-500 text-white rounded hover:bg-red-600'>✗ Tolak</a>";
+                                    }
+                                    if ($row['proof_image'] && $paySt == 'pending' && $st == 'confirmed') {
+                                        echo "<a href='?page=bookings&action=confirm_pay&id={$row['id']}' class='inline-block px-3 py-1 mb-1 bg-purple-500 text-white rounded hover:bg-purple-600'>💰 Validasi</a>";
+                                    }
+                                    if ($st == 'confirmed' && $row['is_paid'] == 1) {
+                                        echo "<a href='?page=bookings&action=complete&id={$row['id']}' class='inline-block px-3 py-1 mb-1 bg-blue-500 text-white rounded hover:bg-blue-600'>✓ Selesai</a>";
+                                    }
+                                    if ($st == 'completed' || $st == 'cancelled') {
+                                        echo "<span class='text-gray-400 text-xs'>Arsip</span>";
+                                    }
+                                    echo "</td>
+                                </tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
                     </div>
-                    <label>Durasi (Menit)</label><input type="number" name="duration"
-                        value="<?php echo $edit_treatment ? $edit_treatment['duration'] : '60'; ?>" required>
-                    <button type="submit" name="<?php echo $edit_treatment ? 'edit_treatment' : 'add_treatment'; ?>"
-                        class="btn-primary"
-                        style="margin-top:15px;"><?php echo $edit_treatment ? '💾 Update Treatment' : '➕ Tambah Treatment'; ?></button>
-                    <?php if($edit_treatment): ?><a href="admin.php?page=treatments"
-                        style="display:block; text-align:center; margin-top:10px; color:var(--gray);">Batal
-                        Edit</a><?php endif; ?>
-                </form>
-            </div>
+                </div>
 
-            <h3 style="margin-top:40px;">Daftar Treatment</h3>
-            <div class="card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nama Treatment</th>
-                            <th>Harga</th>
-                            <th>Durasi</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $treatments = $pdo->query("SELECT * FROM treatments ORDER BY id DESC");
-                        while($t = $treatments->fetch()){
-                            echo "<tr>
-                                <td>#{$t['id']}</td>
-                                <td><b>{$t['name']}</b></td>
-                                <td>Rp " . number_format($t['price']) . "</td>
-                                <td>{$t['duration']} menit</td>
-                                <td>
-                                    <a href='?page=treatments&edit={$t['id']}' class='btn-small btn-primary'>✏️ Edit</a>
-                                    <a href='?page=treatments&delete_treatment={$t['id']}' class='btn-small btn-danger' onclick='return confirm(\"Yakin hapus?\")'>🗑️ Hapus</a>
-                                </td>
-                            </tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
+            <?php elseif ($page == 'treatments'): ?>
 
-            <?php elseif($page == 'members'): ?>
+                <!-- Treatments Page -->
+                <!-- Button Tambah Treatment -->
+                <div class="mb-6">
+                    <button onclick="openModal()"
+                        class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-md">
+                        ➕ Tambah Treatment Baru
+                    </button>
+                </div>
 
-            <h2>Kelola Member</h2>
-            <div class="card">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nama Member</th>
-                            <th>Email</th>
-                            <th>Tanggal Bergabung</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        // Ambil hanya user dengan role 'member'
-                        $members = $pdo->query("SELECT * FROM users WHERE role='member' ORDER BY created_at DESC");
-                        
-                        if($members->rowCount() > 0) {
-                            while($m = $members->fetch()){
-                                echo "<tr>
-                                    <td>#{$m['id']}</td>
-                                    <td><b>{$m['username']}</b></td>
-                                    <td>{$m['email']}</td>
-                                    <td>{$m['created_at']}</td>
-                                    <td>
-                                        <a href='?page=members&reset_member={$m['id']}' class='btn-small btn-warning' 
-                                           onclick='return confirm(\"Reset password member ini menjadi: password ?\")'>
-                                           🔑 Reset Pass
-                                        </a>
-                                        
-                                        <a href='?page=members&delete_member={$m['id']}' class='btn-small btn-danger' 
-                                           onclick='return confirm(\"Yakin hapus member ini? Data tidak bisa kembali.\")'>
-                                           🗑️ Hapus
+                <!-- Modal Tambah/Edit Treatment -->
+                <div id="treatmentModal"
+                    class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+                        <div class="flex items-center justify-between p-6 border-b">
+                            <h3 id="modalTitle" class="text-xl font-semibold text-gray-800">
+                                ➕ Tambah Treatment Baru
+                            </h3>
+                            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <form method="POST" id="treatmentForm" class="p-6">
+                            <input type="hidden" id="treatmentId" name="id" value="">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Treatment</label>
+                                    <input type="text" id="treatmentName" name="name"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Harga (Rp)</label>
+                                    <input type="number" id="treatmentPrice" name="price"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Menit)</label>
+                                <input type="number" id="treatmentDuration" name="duration" value="60"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                    required>
+                            </div>
+
+                            <div class="flex gap-2 justify-end">
+                                <button type="button" onclick="closeModal()"
+                                    class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">
+                                    Batal
+                                </button>
+                                <button type="submit" id="submitBtn" name="add_treatment"
+                                    class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium">
+                                    ➕ Tambah Treatment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="px-6 py-4 border-b">
+                        <h3 class="text-lg font-semibold text-gray-800">Daftar Treatment</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Nama
+                                        Treatment</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Harga</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Durasi
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <?php
+                                $treatments = $pdo->query("SELECT * FROM treatments ORDER BY id DESC");
+                                while ($t = $treatments->fetch()) {
+                                    echo "<tr class='hover:bg-gray-50'>
+                                    <td class='px-6 py-4 text-sm text-gray-900'>#{$t['id']}</td>
+                                    <td class='px-6 py-4 text-sm font-medium text-gray-900'>{$t['name']}</td>
+                                    <td class='px-6 py-4 text-sm text-gray-900'>Rp " . number_format($t['price']) . "</td>
+                                    <td class='px-6 py-4 text-sm text-gray-900'>{$t['duration']} menit</td>
+                                    <td class='px-6 py-4 text-sm'>
+                                        <button onclick='editTreatment({$t['id']}, \"{$t['name']}\", {$t['price']}, {$t['duration']})' 
+                                           class='inline-block px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2'>
+                                            ✏️ Edit
+                                        </button>
+                                        <a href='?page=treatments&delete_treatment={$t['id']}' 
+                                           onclick='return confirm(\"Yakin hapus?\")' 
+                                           class='inline-block px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'>
+                                            🗑️ Hapus
                                         </a>
                                     </td>
                                 </tr>";
-                            }
-                        } else {
-                            echo "<tr><td colspan='5' style='text-align:center; color:#777;'>Belum ada member yang terdaftar.</td></tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            <?php elseif ($page == 'members'): ?>
+
+                <!-- Members Page -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="px-6 py-4 border-b">
+                        <h3 class="text-lg font-semibold text-gray-800">Daftar Member</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Nama
+                                        Member</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Tanggal
+                                        Bergabung</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <?php
+                                $members = $pdo->query("SELECT * FROM users WHERE role='member' ORDER BY created_at DESC");
+
+                                if ($members->rowCount() > 0) {
+                                    while ($m = $members->fetch()) {
+                                        echo "<tr class='hover:bg-gray-50'>
+                                        <td class='px-6 py-4 text-sm text-gray-900'>#{$m['id']}</td>
+                                        <td class='px-6 py-4 text-sm font-medium text-gray-900'>{$m['username']}</td>
+                                        <td class='px-6 py-4 text-sm text-gray-600'>{$m['email']}</td>
+                                        <td class='px-6 py-4 text-sm text-gray-600'>{$m['created_at']}</td>
+                                        <td class='px-6 py-4 text-sm'>
+                                            <a href='?page=members&reset_member={$m['id']}' 
+                                               onclick='return confirm(\"Reset password member ini menjadi: password ?\")' 
+                                               class='inline-block px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 mr-2'>
+                                                🔑 Reset Pass
+                                            </a>
+                                            <a href='?page=members&delete_member={$m['id']}' 
+                                               onclick='return confirm(\"Yakin hapus member ini? Data tidak bisa kembali.\")' 
+                                               class='inline-block px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'>
+                                                🗑️ Hapus
+                                            </a>
+                                        </td>
+                                    </tr>";
+                                    }
+                                } else {
+                                    echo "<tr>
+                                    <td colspan='5' class='px-6 py-8 text-center text-gray-500'>
+                                        Belum ada member yang terdaftar.
+                                    </td>
+                                </tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
             <?php endif; ?>
-        </div>
+        </main>
     </div>
 </body>
 
