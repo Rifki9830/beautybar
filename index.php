@@ -144,54 +144,56 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Apa Kata Mereka</h2>
-                <p class="section-subtitle">Testimoni dari pelanggan setia kami</p>
+                <p class="section-subtitle">Testimoni asli dari pelanggan setia kami</p>
             </div>
             <div class="testimonials-slider">
-                <div class="testimonial-card">
-                    <div class="testimonial-content">
-                        <p>"Pelayanan sangat memuaskan, hasil treatment sesuai dengan ekspektasi. Therapis ramah dan
-                            profesional."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Customer">
-                        </div>
-                        <div class="author-info">
-                            <h4>Siti Nurhaliza</h4>
-                            <p>Pelanggan Setia</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-content">
-                        <p>"Tempatnya nyaman, bersih, dan harganya terjangkau. Saya sudah menjadi pelanggan di sini
-                            selama 2 tahun."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Customer">
-                        </div>
-                        <div class="author-info">
-                            <h4>Budi Santoso</h4>
-                            <p>Pelanggan Setia</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-content">
-                        <p>"Treatment di sini selalu membuat saya merasa segar dan percaya diri. Highly recommended!"
-                        </p>
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Customer">
-                        </div>
-                        <div class="author-info">
-                            <h4>Dewi Lestari</h4>
-                            <p>Pelanggan Setia</p>
-                        </div>
-                    </div>
-                </div>
+                <?php
+                // PERBAIKAN: Menggunakan u.username karena di database kolomnya adalah 'username'
+                $query = "SELECT s.feedback, s.rating, u.username as name 
+                          FROM surveys s 
+                          JOIN bookings b ON s.booking_id = b.id 
+                          JOIN users u ON b.user_id = u.id 
+                          ORDER BY s.id DESC 
+                          LIMIT 3";
+                
+                try {
+                    $stmt = $pdo->query($query);
+                    
+                    if ($stmt->rowCount() > 0) {
+                        while ($row = $stmt->fetch()) {
+                            // Avatar dari inisial username
+                            $avatar_url = "https://ui-avatars.com/api/?name=" . urlencode($row['name']) . "&background=random&color=fff";
+                ?>
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <div style="color: #ffc107; margin-bottom: 0.5rem;">
+                                        <?php for($i=0; $i < $row['rating']; $i++): ?>
+                                            <i class="fas fa-star"></i>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <p>"<?php echo htmlspecialchars($row['feedback']); ?>"</p>
+                                </div>
+                                <div class="testimonial-author">
+                                    <div class="author-avatar">
+                                        <img src="<?php echo $avatar_url; ?>" alt="<?php echo htmlspecialchars($row['name']); ?>">
+                                    </div>
+                                    <div class="author-info">
+                                        <h4><?php echo htmlspecialchars($row['name']); ?></h4>
+                                        <p>Pelanggan Terverifikasi</p>
+                                    </div>
+                                </div>
+                            </div>
+                <?php 
+                        }
+                    } else {
+                        // Tampilan jika belum ada data
+                        echo '<div class="col-span-3 text-center" style="width:100%;"><p>Belum ada ulasan saat ini.</p></div>';
+                    }
+                } catch (PDOException $e) {
+                    // Tampilkan error spesifik jika masih gagal (Hapus ini saat production)
+                    echo '<p style="color:red; text-align:center;">Error: ' . $e->getMessage() . '</p>';
+                }
+                ?>
             </div>
         </div>
     </section>
