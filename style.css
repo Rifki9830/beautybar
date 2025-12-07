@@ -1,0 +1,45 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+    --primary: #d63384; /* Pink */
+    --dark: #212529;    /* Dark Grey */
+    --light: #f8f9fa;
+}
+
+body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: var(--dark); }
+a { text-decoration: none; color: inherit; }
+
+/* Navbar */
+.navbar { background: var(--dark); padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; }
+.navbar .brand { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+.navbar a { color: white; margin-left: 20px; }
+.navbar .btn-login { background: var(--primary); padding: 5px 15px; border-radius: 20px; }
+
+/* Hero */
+.hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://source.unsplash.com/1600x900/?spa,salon'); background-size: cover; color: white; padding: 100px 20px; text-align: center; }
+.btn-main { background: var(--primary); color: white; padding: 10px 30px; border-radius: 30px; font-weight: bold; display: inline-block; margin-top: 20px; }
+
+/* Content & Forms */
+.container { max-width: 1000px; margin: 30px auto; padding: 20px; }
+.card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+
+/* Form Styles */
+input, select, button { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+button { background: var(--primary); color: white; border: none; cursor: pointer; font-weight: bold; }
+button:hover { opacity: 0.9; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+th { background: #eee; }
+.badge { padding: 3px 8px; border-radius: 5px; font-size: 0.8rem; color: white; }
+.bg-pending { background: orange; } .bg-confirmed { background: green; }
+
+/* Dashboard Sidebar Layout */
+.dash-container { display: flex; min-height: 100vh; }
+.sidebar { width: 250px; background: var(--dark); color: white; padding: 20px; }
+.sidebar a { display: block; padding: 10px; margin-bottom: 5px; border-radius: 5px; }
+.sidebar a:hover { background: var(--primary); }
+.main { flex: 1; padding: 20px; }
