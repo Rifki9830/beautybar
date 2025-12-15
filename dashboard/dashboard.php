@@ -44,7 +44,7 @@ $stats['monthly_revenue'] = $stmt->fetch()['total'] ?? 0;
 
 // Data untuk chart (7 hari terakhir)
 $chartData = [];
-for($i = 6; $i >= 0; $i--) {
+for ($i = 6; $i >= 0; $i--) {
     $date = date('Y-m-d', strtotime("-$i days"));
     $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM bookings WHERE DATE(created_at) = ?");
     $stmt->execute([$date]);
@@ -67,6 +67,7 @@ $page = 'dashboard';
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,6 +75,7 @@ $page = 'dashboard';
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body class="bg-gray-100">
     <div class="flex min-h-screen">
         <!-- Sidebar -->
@@ -82,7 +84,7 @@ $page = 'dashboard';
                 <h2 class="text-2xl font-bold text-purple-600">Beautybar</h2>
                 <p class="text-sm text-gray-500 mt-1">Admin Panel</p>
             </div>
-            
+
             <div class="px-4 py-2">
                 <div class="bg-purple-50 rounded-lg p-4 mb-4">
                     <p class="text-sm text-gray-600">Halo,</p>
@@ -91,26 +93,37 @@ $page = 'dashboard';
             </div>
 
             <nav class="px-4">
-                <a href="dashboard.php" 
-                   class="flex items-center px-4 py-3 mb-2 rounded-lg bg-purple-600 text-white">
+                <a href="dashboard.php" class="flex items-center px-4 py-3 mb-2 rounded-lg bg-purple-600 text-white">
                     <span class="mr-3">📊</span>
                     <span>Dashboard</span>
                 </a>
-                
-                <a href="admin.php?page=bookings" 
-                   class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+
+                <a href="admin.php?page=bookings"
+                    class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
                     <span class="mr-3">📅</span>
                     <span>Kelola Booking</span>
                 </a>
-                
-                <a href="admin.php?page=treatments" 
-                   class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+
+                <a href="categories.php"
+                    class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                    <span class="mr-3">🏷️</span>
+                    <span>Kelola Kategori</span>
+                </a>
+
+                <a href="admin.php?page=treatments"
+                    class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
                     <span class="mr-3">💆</span>
                     <span>Kelola Treatment</span>
                 </a>
-                
-                <a href="admin.php?page=members" 
-                   class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+
+                <a href="therapists.php"
+                    class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                    <span class="mr-3">👨‍⚕️</span>
+                    <span>Kelola Terapis</span>
+                </a>
+
+                <a href="admin.php?page=members"
+                    class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
                     <span class="mr-3">👥</span>
                     <span>Kelola Member</span>
                 </a>
@@ -148,7 +161,9 @@ $page = 'dashboard';
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-4">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                </path>
                             </svg>
                         </div>
                     </div>
@@ -164,7 +179,9 @@ $page = 'dashboard';
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-4">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                </path>
                             </svg>
                         </div>
                     </div>
@@ -175,12 +192,15 @@ $page = 'dashboard';
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-purple-100 text-sm font-medium">Total Revenue</p>
-                            <h3 class="text-3xl font-bold mt-2">Rp <?php echo number_format($stats['total_revenue'], 0, ',', '.'); ?></h3>
+                            <h3 class="text-3xl font-bold mt-2">Rp
+                                <?php echo number_format($stats['total_revenue'], 0, ',', '.'); ?></h3>
                             <p class="text-purple-100 text-xs mt-1">Pendapatan keseluruhan</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-4">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
                             </svg>
                         </div>
                     </div>
@@ -196,7 +216,8 @@ $page = 'dashboard';
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-4">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
                     </div>
@@ -211,7 +232,8 @@ $page = 'dashboard';
                         <h3 class="text-lg font-semibold text-gray-800">Revenue Bulan Ini</h3>
                         <span class="text-2xl">💰</span>
                     </div>
-                    <p class="text-3xl font-bold text-purple-600">Rp <?php echo number_format($stats['monthly_revenue'], 0, ',', '.'); ?></p>
+                    <p class="text-3xl font-bold text-purple-600">Rp
+                        <?php echo number_format($stats['monthly_revenue'], 0, ',', '.'); ?></p>
                     <p class="text-sm text-gray-500 mt-2"><?php echo date('F Y'); ?></p>
                 </div>
 
@@ -248,13 +270,15 @@ $page = 'dashboard';
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Booking Terbaru</h3>
                     <div class="space-y-3">
-                        <?php if(count($recentBookings) > 0): ?>
-                            <?php foreach($recentBookings as $booking): ?>
-                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                        <?php if (count($recentBookings) > 0): ?>
+                            <?php foreach ($recentBookings as $booking): ?>
+                                <div
+                                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
                                     <div class="flex-1">
                                         <p class="font-medium text-gray-800"><?php echo $booking['username']; ?></p>
                                         <p class="text-sm text-gray-600"><?php echo $booking['treatment_name']; ?></p>
-                                        <p class="text-xs text-gray-500 mt-1"><?php echo date('d M Y, H:i', strtotime($booking['created_at'])); ?></p>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            <?php echo date('d M Y, H:i', strtotime($booking['created_at'])); ?></p>
                                     </div>
                                     <div class="text-right">
                                         <?php
@@ -269,7 +293,8 @@ $page = 'dashboard';
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full <?php echo $badgeClass; ?>">
                                             <?php echo ucfirst($booking['status']); ?>
                                         </span>
-                                        <p class="text-sm font-semibold text-purple-600 mt-1">Rp <?php echo number_format($booking['price'], 0, ',', '.'); ?></p>
+                                        <p class="text-sm font-semibold text-purple-600 mt-1">Rp
+                                            <?php echo number_format($booking['price'], 0, ',', '.'); ?></p>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -277,7 +302,8 @@ $page = 'dashboard';
                             <p class="text-center text-gray-500 py-4">Belum ada booking</p>
                         <?php endif; ?>
                     </div>
-                    <a href="admin.php?page=bookings" class="block text-center mt-4 text-purple-600 hover:text-purple-700 font-medium">
+                    <a href="admin.php?page=bookings"
+                        class="block text-center mt-4 text-purple-600 hover:text-purple-700 font-medium">
                         Lihat Semua Booking →
                     </a>
                 </div>
@@ -287,19 +313,23 @@ $page = 'dashboard';
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <a href="admin.php?page=bookings" class="flex flex-col items-center justify-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition">
+                    <a href="admin.php?page=bookings"
+                        class="flex flex-col items-center justify-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition">
                         <span class="text-3xl mb-2">📅</span>
                         <span class="text-sm font-medium text-gray-700">Kelola Booking</span>
                     </a>
-                    <a href="admin.php?page=treatments" class="flex flex-col items-center justify-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition">
+                    <a href="admin.php?page=treatments"
+                        class="flex flex-col items-center justify-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition">
                         <span class="text-3xl mb-2">💆</span>
                         <span class="text-sm font-medium text-gray-700">Kelola Treatment</span>
                     </a>
-                    <a href="admin.php?page=members" class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
+                    <a href="admin.php?page=members"
+                        class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
                         <span class="text-3xl mb-2">👥</span>
                         <span class="text-sm font-medium text-gray-700">Kelola Member</span>
                     </a>
-                    <a href="index.php" class="flex flex-col items-center justify-center p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition">
+                    <a href="index.php"
+                        class="flex flex-col items-center justify-center p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition">
                         <span class="text-3xl mb-2">🏠</span>
                         <span class="text-sm font-medium text-gray-700">Ke Website</span>
                     </a>
@@ -344,4 +374,5 @@ $page = 'dashboard';
         });
     </script>
 </body>
+
 </html>

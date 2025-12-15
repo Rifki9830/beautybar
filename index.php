@@ -25,7 +25,7 @@ require 'config.php';
             </div>
             <div class="navbar-menu">
                 <a href="index.php" class="active">Home</a>
-                <a href="#treatments">Treatment</a>
+                <a href="treatments.php">Treatment</a>
 
                 <?php if(isset($_SESSION['user_id'])): ?>
                     <a href="dashboard/member.php">Dashboard</a>
@@ -249,7 +249,7 @@ require 'config.php';
                     <h3>Quick Links</h3>
                     <ul>
                         <li><a href="index.php">Home</a></li>
-                        <li><a href="#treatments">Treatment</a></li>
+                        <li><a href="treatments.php">Treatment</a></li>
                         <li><a href="login.php">Login</a></li>
                         <li><a href="register.php">Register</a></li>
                     </ul>
