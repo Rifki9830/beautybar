@@ -10,8 +10,7 @@ require 'config.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beautybar.bync - Salon Kecantikan Terbaik</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" 
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -28,11 +27,11 @@ require 'config.php';
                 <a href="treatments.php">Treatment</a>
 
                 <?php if(isset($_SESSION['user_id'])): ?>
-                    <a href="dashboard/member.php">Dashboard</a>
-                    <a href="logout.php" class="btn btn-outline">Logout</a>
+                <a href="dashboard/member.php">Dashboard</a>
+                <a href="logout.php" class="btn btn-outline">Logout</a>
                 <?php else: ?>
-                    <a href="login.php">Login</a>
-                    <a href="register.php" class="btn btn-primary">Daftar</a>
+                <a href="login.php">Login</a>
+                <a href="register.php" class="btn btn-primary">Daftar</a>
                 <?php endif; ?>
             </div>
 
@@ -60,7 +59,7 @@ require 'config.php';
             <div class="hero-image">
                 <div class="hero-image-container">
                     <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
-                         alt="Beauty Treatment">
+                        alt="Beauty Treatment">
                 </div>
             </div>
         </div>
@@ -117,22 +116,35 @@ require 'config.php';
 
             <div class="treatments-grid">
                 <?php
-                $stmt = $pdo->query("SELECT * FROM treatments");
-                while ($row = $stmt->fetch()) {
+                // Query untuk mengambil MAKSIMAL 9 treatment
+                $stmt = $pdo->query("SELECT t.*, c.name as category_name 
+                                     FROM treatments t 
+                                     LEFT JOIN categories c ON t.category_id = c.id
+                                     ORDER BY t.id DESC 
+                                     LIMIT 9");
+                $treatments = $stmt->fetchAll();
+                
+                if (count($treatments) > 0) {
+                    foreach ($treatments as $row) {
 
-                    $initial = substr($row['name'], 0, 1);
-                    $image_src = $row['image'] 
-                        ? 'assets/uploads/' . htmlspecialchars($row['image']) 
-                        : '';
+                        $initial = substr($row['name'], 0, 1);
+                        $image_src = $row['image'] 
+                            ? 'assets/uploads/' . htmlspecialchars($row['image']) 
+                            : '';
                 ?>
                 <div class="treatment-card">
                     <div class="treatment-image">
                         <?php if ($image_src): ?>
-                            <img src="<?= $image_src ?>" 
-                                 alt="<?= htmlspecialchars($row['name']) ?>" 
-                                 class="treatment-img">
+                        <img src="<?= $image_src ?>" alt="<?= htmlspecialchars($row['name']) ?>" class="treatment-img">
                         <?php else: ?>
-                            <div class="treatment-icon"><?= $initial ?></div>
+                        <div class="treatment-icon"><?= $initial ?></div>
+                        <?php endif; ?>
+
+                        <?php if ($row['category_name']): ?>
+                        <div
+                            style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.95); color: #667eea; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+                            <?= htmlspecialchars($row['category_name']) ?>
+                        </div>
                         <?php endif; ?>
                     </div>
 
@@ -140,18 +152,42 @@ require 'config.php';
                         <h3><?= htmlspecialchars($row['name']) ?></h3>
 
                         <div class="treatment-meta">
-                            <span class="price">Rp <?= number_format($row['price']) ?></span>
+                            <span class="price">Rp <?= number_format($row['price'], 0, ',', '.') ?></span>
                             <span class="duration">
-                                <i class="fas fa-hourglass-half"></i> 
+                                <i class="fas fa-hourglass-half"></i>
                                 <?= $row['duration'] ?> Menit
                             </span>
                         </div>
 
-                        <a href="login.php" class="btn btn-primary btn-block">Booking Sekarang</a>
+                        <a href="login.php" class="btn btn-primary btn-block">
+                            <i class="fas fa-calendar-check"></i> Booking Sekarang
+                        </a>
                     </div>
                 </div>
-                <?php } ?>
+                <?php 
+                    } 
+                } else {
+                    echo "<p style='text-align: center; color: #718096; padding: 40px;'>Belum ada treatment yang tersedia saat ini.</p>";
+                }
+                ?>
             </div>
+
+            <?php
+            // Hitung total treatments
+            $total_treatments_stmt = $pdo->query("SELECT COUNT(*) AS total FROM treatments");
+            $total_treatments = $total_treatments_stmt->fetchColumn();
+            
+            // Tampilkan tombol "Lihat Semua Treatment" jika ada lebih dari 9
+            if ($total_treatments > 9) {
+            ?>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="treatments.php" class="btn btn-outline" style="min-width: 250px;">
+                    <i class="fas fa-eye"></i> Lihat Semua Treatment (<?= $total_treatments ?>)
+                </a>
+            </div>
+            <?php
+            }
+            ?>
         </div>
     </section>
 
@@ -185,23 +221,24 @@ require 'config.php';
                     ?>
 
                     <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <div style="color:#ffc107;margin-bottom:8px;">
-                                <?php for ($i=0; $i < $row['rating']; $i++): ?>
+                        <div class="testimonial-inner">
+                            <div class="testimonial-content">
+                                <div style="color:#ffc107;margin-bottom:8px;">
+                                    <?php for ($i=0; $i < $row['rating']; $i++): ?>
                                     <i class="fas fa-star"></i>
-                                <?php endfor; ?>
+                                    <?php endfor; ?>
+                                </div>
+                                <p>"<?= htmlspecialchars($row['feedback']) ?>"</p>
                             </div>
-                            <p>"<?= htmlspecialchars($row['feedback']) ?>"</p>
-                        </div>
 
-                        <div class="testimonial-author">
-                            <div class="author-avatar">
-                                <img src="<?= $avatar_url ?>" 
-                                     alt="<?= htmlspecialchars($row['name']) ?>">
-                            </div>
-                            <div class="author-info">
-                                <h4><?= htmlspecialchars($row['name']) ?></h4>
-                                <p>Pelanggan Terverifikasi</p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <img src="<?= $avatar_url ?>" alt="<?= htmlspecialchars($row['name']) ?>">
+                                </div>
+                                <div class="author-info">
+                                    <h4><?= htmlspecialchars($row['name']) ?></h4>
+                                    <p>Pelanggan Terverifikasi</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -274,93 +311,152 @@ require 'config.php';
 
     <!-- Mobile Menu -->
     <script>
-        document.querySelector('.mobile-toggle').addEventListener('click', function() {
-            document.querySelector('.navbar-menu').classList.toggle('active');
-        });
+    document.querySelector('.mobile-toggle').addEventListener('click', function() {
+        document.querySelector('.navbar-menu').classList.toggle('active');
+    });
     </script>
 
     <!-- AUTO SLIDE + SWIPE TESTIMONIAL -->
     <script>
-let currentSlide = 0;
-let isDragging = false;
-let startX = 0;
+    (function() {
+        // Robust slider: pixel-based transform, resize handling, and guards
+        const wrapper = document.querySelector('.testimonial-wrapper');
+        const dotsContainer = document.querySelector('.slider-dots');
 
-const wrapper = document.querySelector('.testimonial-wrapper');
-const cards = document.querySelectorAll('.testimonial-card');
-const dotsContainer = document.querySelector('.slider-dots');
-const totalSlides = cards.length;
+        if (!wrapper) {
+            if (dotsContainer) dotsContainer.classList.add('hidden');
+            return;
+        }
 
-// Generate dots
-for (let i = 0; i < totalSlides; i++) {
-    const dot = document.createElement('span');
-    if (i === 0) dot.classList.add('active');
-    dot.addEventListener('click', () => goToSlide(i));
-    dotsContainer.appendChild(dot);
-}
+        const cards = wrapper.querySelectorAll('.testimonial-card');
+        const totalSlides = cards.length;
 
-const dots = document.querySelectorAll('.slider-dots span');
+        if (totalSlides === 0) {
+            if (dotsContainer) dotsContainer.classList.add('hidden');
+            return;
+        }
 
-function goToSlide(n) {
-    currentSlide = n;
-    updateSlider();
-}
+        let currentSlide = 0;
+        let isDragging = false;
+        let startX = 0;
+        let slideWidth = 0;
+        let slideInterval = null;
 
-function updateSlider() {
-    wrapper.style.transition = "0.6s ease";
-    wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+        const gap = parseFloat(getComputedStyle(wrapper).gap) || 0;
 
-    dots.forEach(d => d.classList.remove('active'));
-    dots[currentSlide].classList.add('active');
-}
+        function calculateSizes() {
+            // Calculate slide width using the visible slider container width
+            const slider = wrapper.closest('.testimonials-slider');
+            // Use clientWidth to exclude potential fractional scrollbar area
+            const containerWidth = slider ? slider.clientWidth : wrapper.clientWidth;
 
-function autoSlide() {
-    currentSlide = (currentSlide + 1) % totalSlides;
-    updateSlider();
-}
+            // Keep each slide as flex: 0 0 100% (CSS) and compute slideWidth for transforms
+            slideWidth = containerWidth + gap;
+        }
 
-let slideInterval = setInterval(autoSlide, 4000);
+        function createDots() {
+            if (!dotsContainer) return;
+            dotsContainer.innerHTML = '';
+            if (totalSlides <= 1) {
+                dotsContainer.classList.add('hidden');
+                return;
+            }
+            dotsContainer.classList.remove('hidden');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('span');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+        }
 
-// Swipe support
-wrapper.addEventListener('touchstart', startDrag);
-wrapper.addEventListener('mousedown', startDrag);
+        function updateDots() {
+            if (!dotsContainer) return;
+            const dots = dotsContainer.querySelectorAll('span');
+            dots.forEach(d => d.classList.remove('active'));
+            if (dots[currentSlide]) dots[currentSlide].classList.add('active');
+        }
 
-wrapper.addEventListener('touchmove', dragMove);
-wrapper.addEventListener('mousemove', dragMove);
+        function updateSlider(animate = true) {
+            if (animate) wrapper.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.9, 0.2, 1)';
+            else wrapper.style.transition = 'none';
+            const x = -currentSlide * slideWidth;
+            wrapper.style.transform = `translateX(${x}px)`;
+            updateDots();
+        }
 
-wrapper.addEventListener('touchend', endDrag);
-wrapper.addEventListener('mouseup', endDrag);
-wrapper.addEventListener('mouseleave', endDrag);
+        function goToSlide(n) {
+            currentSlide = Math.max(0, Math.min(n, totalSlides - 1));
+            updateSlider();
+            resetAutoSlide();
+        }
 
-function startDrag(e) {
-    clearInterval(slideInterval);
-    isDragging = true;
-    startX = e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
-    wrapper.style.transition = "none";
-}
+        function autoSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlider();
+        }
 
-function dragMove(e) {
-    if (!isDragging) return;
+        function resetAutoSlide() {
+            if (slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(autoSlide, 4000);
+        }
 
-    const currentX = e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
-    const diff = currentX - startX;
+        // Drag / Swipe
+        function startDrag(e) {
+            if (e.type === 'mousedown') e.preventDefault();
+            clearInterval(slideInterval);
+            isDragging = true;
+            startX = (e.type.includes('mouse')) ? e.pageX : e.touches[0].clientX;
+            wrapper.style.transition = 'none';
+            calculateSizes();
+        }
 
-    wrapper.style.transform = `translateX(calc(-${currentSlide * 100}% + ${diff}px))`;
-}
+        function dragMove(e) {
+            if (!isDragging) return;
+            const currentX = (e.type.includes('mouse')) ? e.pageX : e.touches[0].clientX;
+            const diff = currentX - startX;
+            const x = -currentSlide * slideWidth + diff;
+            wrapper.style.transform = `translateX(${x}px)`;
+        }
 
-function endDrag(e) {
-    if (!isDragging) return;
-    isDragging = false;
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const endX = (e.type.includes('mouse')) ? e.pageX : (e.changedTouches ? e.changedTouches[0].clientX : startX);
+            const diff = endX - startX;
+            // threshold
+            if (diff > 70 && currentSlide > 0) currentSlide--;
+            else if (diff < -70 && currentSlide < totalSlides - 1) currentSlide++;
+            updateSlider(true);
+            resetAutoSlide();
+        }
 
-    const endX = e.type.includes("mouse") ? e.pageX : e.changedTouches[0].clientX;
-    const diff = endX - startX;
+        // init
+        calculateSizes();
+        createDots();
+        updateSlider(false);
+        resetAutoSlide();
 
-    if (diff > 70 && currentSlide > 0) currentSlide--;
-    else if (diff < -70 && currentSlide < totalSlides - 1) currentSlide++;
+        // events
+        // support both touch and mouse
+        wrapper.addEventListener('touchstart', startDrag, {passive: true});
+        wrapper.addEventListener('mousedown', startDrag);
 
-    updateSlider();
-    slideInterval = setInterval(autoSlide, 4000);
-}
+        wrapper.addEventListener('touchmove', dragMove, {passive: true});
+        wrapper.addEventListener('mousemove', dragMove);
+
+        wrapper.addEventListener('touchend', endDrag);
+        wrapper.addEventListener('mouseup', endDrag);
+        wrapper.addEventListener('mouseleave', endDrag);
+
+        // recalc on resize (cards widths change)
+        window.addEventListener('resize', () => {
+            calculateSizes();
+            updateSlider(false);
+        });
+    })();
     </script>
 
 </body>
+
 </html>

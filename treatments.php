@@ -50,8 +50,7 @@ if ($selected_category > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $page_title ?> - Beautybar.bync</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" 
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -68,11 +67,11 @@ if ($selected_category > 0) {
                 <a href="treatments.php" class="active">Treatment</a>
 
                 <?php if(isset($_SESSION['user_id'])): ?>
-                    <a href="dashboard/member.php">Dashboard</a>
-                    <a href="logout.php" class="btn btn-outline">Logout</a>
+                <a href="dashboard/member.php">Dashboard</a>
+                <a href="logout.php" class="btn btn-outline">Logout</a>
                 <?php else: ?>
-                    <a href="login.php">Login</a>
-                    <a href="register.php" class="btn btn-primary">Daftar</a>
+                <a href="login.php">Login</a>
+                <a href="register.php" class="btn btn-primary">Daftar</a>
                 <?php endif; ?>
             </div>
 
@@ -114,28 +113,30 @@ if ($selected_category > 0) {
             </div>
 
             <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-top: 40px;">
-                <a href="treatments.php" 
-                   class="btn <?= $selected_category == 0 ? 'btn-primary' : 'btn-outline' ?>"
-                   style="border-radius: 50px; padding: 12px 30px;">
+                <a href="treatments.php"
+                    class="filter-btn btn <?= $selected_category == 0 ? 'btn-primary' : 'btn-outline' ?>"
+                    data-category="0" style="border-radius: 50px; padding: 12px 30px;">
                     <i class="fas fa-th"></i>
                     Semua
-                    <span style="background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 12px; margin-left: 8px; font-size: 0.85rem;">
+                    <span
+                        style="background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 12px; margin-left: 8px; font-size: 0.85rem;">
                         <?= count($pdo->query("SELECT * FROM treatments")->fetchAll()) ?>
                     </span>
                 </a>
 
                 <?php foreach ($categories as $cat): ?>
-                    <?php if ($cat['treatment_count'] > 0): ?>
-                    <a href="treatments.php?category=<?= $cat['id'] ?>" 
-                       class="btn <?= $selected_category == $cat['id'] ? 'btn-primary' : 'btn-outline' ?>"
-                       style="border-radius: 50px; padding: 12px 30px;">
-                        <i class="fas fa-tag"></i>
-                        <?= htmlspecialchars($cat['name']) ?>
-                        <span style="background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 12px; margin-left: 8px; font-size: 0.85rem;">
-                            <?= $cat['treatment_count'] ?>
-                        </span>
-                    </a>
-                    <?php endif; ?>
+                <?php if ($cat['treatment_count'] > 0): ?>
+                <a href="treatments.php?category=<?= $cat['id'] ?>"
+                    class="filter-btn btn <?= $selected_category == $cat['id'] ? 'btn-primary' : 'btn-outline' ?>"
+                    data-category="<?= $cat['id'] ?>" style="border-radius: 50px; padding: 12px 30px;">
+                    <i class="fas fa-tag"></i>
+                    <?= htmlspecialchars($cat['name']) ?>
+                    <span
+                        style="background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 12px; margin-left: 8px; font-size: 0.85rem;">
+                        <?= $cat['treatment_count'] ?>
+                    </span>
+                </a>
+                <?php endif; ?>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -145,58 +146,59 @@ if ($selected_category > 0) {
     <section class="treatments" style="padding: 40px 0 80px;">
         <div class="container">
             <?php if (count($treatments) > 0): ?>
-                <div class="treatments-grid">
-                    <?php foreach ($treatments as $treatment): ?>
-                        <?php
+            <div class="treatments-grid">
+                <?php foreach ($treatments as $treatment): ?>
+                <?php
                         $initial = substr($treatment['name'], 0, 1);
                         $image_src = $treatment['image'] 
                             ? 'assets/uploads/' . htmlspecialchars($treatment['image']) 
                             : '';
                         ?>
-                        <div class="treatment-card">
-                            <div class="treatment-image">
-                                <?php if ($image_src): ?>
-                                    <img src="<?= $image_src ?>" 
-                                         alt="<?= htmlspecialchars($treatment['name']) ?>" 
-                                         class="treatment-img">
-                                <?php else: ?>
-                                    <div class="treatment-icon"><?= $initial ?></div>
-                                <?php endif; ?>
-                                
-                                <?php if ($treatment['category_name']): ?>
-                                    <div style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.95); color: #667eea; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
-                                        <?= htmlspecialchars($treatment['category_name']) ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                <div class="treatment-card" data-category-id="<?= (int)$treatment['category_id'] ?>">
+                    <div class="treatment-image">
+                        <?php if ($image_src): ?>
+                        <img src="<?= $image_src ?>" alt="<?= htmlspecialchars($treatment['name']) ?>"
+                            class="treatment-img">
+                        <?php else: ?>
+                        <div class="treatment-icon"><?= $initial ?></div>
+                        <?php endif; ?>
 
-                            <div class="treatment-content">
-                                <h3><?= htmlspecialchars($treatment['name']) ?></h3>
-
-                                <div class="treatment-meta">
-                                    <span class="price">Rp <?= number_format($treatment['price'], 0, ',', '.') ?></span>
-                                    <span class="duration">
-                                        <i class="fas fa-hourglass-half"></i> 
-                                        <?= $treatment['duration'] ?> Menit
-                                    </span>
-                                </div>
-
-                                <a href="login.php" class="btn btn-primary btn-block">
-                                    <i class="fas fa-calendar-check"></i> Booking Sekarang
-                                </a>
-                            </div>
+                        <?php if ($treatment['category_name']): ?>
+                        <div
+                            style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.95); color: #667eea; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+                            <?= htmlspecialchars($treatment['category_name']) ?>
                         </div>
-                    <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="treatment-content">
+                        <h3><?= htmlspecialchars($treatment['name']) ?></h3>
+
+                        <div class="treatment-meta">
+                            <span class="price">Rp <?= number_format($treatment['price'], 0, ',', '.') ?></span>
+                            <span class="duration">
+                                <i class="fas fa-hourglass-half"></i>
+                                <?= $treatment['duration'] ?> Menit
+                            </span>
+                        </div>
+
+                        <a href="login.php" class="btn btn-primary btn-block">
+                            <i class="fas fa-calendar-check"></i> Booking Sekarang
+                        </a>
+                    </div>
                 </div>
+                <?php endforeach; ?>
+            </div>
             <?php else: ?>
-                <div style="text-align: center; padding: 80px 20px;">
-                    <i class="fas fa-inbox" style="font-size: 5rem; color: #cbd5e0; margin-bottom: 20px;"></i>
-                    <h3 style="font-size: 1.5rem; color: #4a5568; margin-bottom: 10px;">Belum Ada Treatment</h3>
-                    <p style="color: #718096; margin-bottom: 30px;">Kategori ini belum memiliki treatment. Silakan pilih kategori lain.</p>
-                    <a href="treatments.php" class="btn btn-primary">
-                        Lihat Semua Treatment
-                    </a>
-                </div>
+            <div style="text-align: center; padding: 80px 20px;">
+                <i class="fas fa-inbox" style="font-size: 5rem; color: #cbd5e0; margin-bottom: 20px;"></i>
+                <h3 style="font-size: 1.5rem; color: #4a5568; margin-bottom: 10px;">Belum Ada Treatment</h3>
+                <p style="color: #718096; margin-bottom: 30px;">Kategori ini belum memiliki treatment. Silakan pilih
+                    kategori lain.</p>
+                <a href="treatments.php" class="btn btn-primary">
+                    Lihat Semua Treatment
+                </a>
+            </div>
             <?php endif; ?>
         </div>
     </section>
@@ -252,10 +254,63 @@ if ($selected_category > 0) {
 
     <!-- Mobile Menu Script -->
     <script>
-        document.querySelector('.mobile-toggle').addEventListener('click', function() {
-            document.querySelector('.navbar-menu').classList.toggle('active');
+    document.querySelector('.mobile-toggle').addEventListener('click', function() {
+        document.querySelector('.navbar-menu').classList.toggle('active');
+    });
+    </script>
+
+    <!-- Client-side filter (no reload) -->
+    <script>
+    (function() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.treatment-card');
+
+        function setActiveButton(activeBtn) {
+            filterButtons.forEach(btn => {
+                if (btn === activeBtn) {
+                    btn.classList.remove('btn-outline');
+                    btn.classList.add('btn-primary');
+                } else {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-outline');
+                }
+            });
+        }
+
+        function filterByCategory(catId) {
+            const id = parseInt(catId, 10);
+            cards.forEach(card => {
+                const c = parseInt(card.getAttribute('data-category-id') || 0, 10);
+                if (id === 0 || c === id) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // if JS is enabled, prevent full page navigation
+                e.preventDefault();
+                const cat = this.getAttribute('data-category');
+                setActiveButton(this);
+                filterByCategory(cat);
+            });
         });
+
+        // Initialize: if page loaded with ?category= param, keep that active (server already set classes)
+        // But still run filter to ensure cards match initial state
+        (function initFromServer() {
+            const active = Array.from(filterButtons).find(b => b.classList.contains('btn-primary'));
+            if (active) {
+                const cat = active.getAttribute('data-category');
+                filterByCategory(cat);
+            }
+        })();
+    })();
     </script>
 
 </body>
+
 </html>
