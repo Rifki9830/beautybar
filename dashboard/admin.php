@@ -131,114 +131,115 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
     <title>Admin Dashboard - Beautybar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-                position: fixed;
-                z-index: 50;
-                height: 100vh;
-            }
-            .sidebar.active {
-                transform: translateX(0);
-            }
+    @media (max-width: 768px) {
+        .sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s;
+            position: fixed;
+            z-index: 50;
+            height: 100vh;
         }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+    }
     </style>
     <script>
-        function openModal() {
-            document.getElementById('treatmentModal').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = '➕ Tambah Treatment Baru';
-            document.getElementById('treatmentForm').reset();
-            document.getElementById('treatmentId').value = '';
-            document.getElementById('submitBtn').name = 'add_treatment';
-            document.getElementById('submitBtn').textContent = '➕ Tambah Treatment';
-            document.getElementById('imagePreview').classList.add('hidden');
-            document.getElementById('treatmentImage').value = '';
-            document.getElementById('treatmentCategory').value = '';
-        }
+    function openModal() {
+        document.getElementById('treatmentModal').classList.remove('hidden');
+        document.getElementById('modalTitle').textContent = '➕ Tambah Treatment Baru';
+        document.getElementById('treatmentForm').reset();
+        document.getElementById('treatmentId').value = '';
+        document.getElementById('submitBtn').name = 'add_treatment';
+        document.getElementById('submitBtn').textContent = '➕ Tambah Treatment';
+        document.getElementById('imagePreview').classList.add('hidden');
+        document.getElementById('treatmentImage').value = '';
+        document.getElementById('treatmentCategory').value = '';
+    }
 
-        function closeModal() {
-            document.getElementById('treatmentModal').classList.add('hidden');
-        }
+    function closeModal() {
+        document.getElementById('treatmentModal').classList.add('hidden');
+    }
 
-        function editTreatment(id, name, price, duration, category_id) {
-            document.getElementById('treatmentModal').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = '✏️ Edit Treatment';
-            document.getElementById('treatmentId').value = id;
-            document.getElementById('treatmentName').value = name;
-            document.getElementById('treatmentPrice').value = price;
-            document.getElementById('treatmentDuration').value = duration;
-            document.getElementById('treatmentCategory').value = category_id || '';
-            document.getElementById('submitBtn').name = 'edit_treatment';
-            document.getElementById('submitBtn').textContent = '💾 Update Treatment';
-        }
+    function editTreatment(id, name, price, duration, category_id) {
+        document.getElementById('treatmentModal').classList.remove('hidden');
+        document.getElementById('modalTitle').textContent = '✏️ Edit Treatment';
+        document.getElementById('treatmentId').value = id;
+        document.getElementById('treatmentName').value = name;
+        document.getElementById('treatmentPrice').value = price;
+        document.getElementById('treatmentDuration').value = duration;
+        document.getElementById('treatmentCategory').value = category_id || '';
+        document.getElementById('submitBtn').name = 'edit_treatment';
+        document.getElementById('submitBtn').textContent = '💾 Update Treatment';
+    }
 
-        // Image preview handler
-        document.addEventListener('DOMContentLoaded', function () {
-            const imageInput = document.getElementById('treatmentImage');
-            if (imageInput) {
-                imageInput.addEventListener('change', function (e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function (event) {
-                            document.getElementById('previewImg').src = event.target.result;
-                            document.getElementById('imagePreview').classList.remove('hidden');
-                        }
-                        reader.readAsDataURL(file);
+    // Image preview handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageInput = document.getElementById('treatmentImage');
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('previewImg').src = event.target.result;
+                        document.getElementById('imagePreview').classList.remove('hidden');
                     }
-                });
-            }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
 
-            // Drag and drop
-            const fileInput = document.getElementById('treatmentImage');
-            const dropZone = fileInput?.parentElement;
+        // Drag and drop
+        const fileInput = document.getElementById('treatmentImage');
+        const dropZone = fileInput?.parentElement;
 
-            if (dropZone) {
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    dropZone.parentElement.classList.add('bg-purple-100');
-                });
+        if (dropZone) {
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.parentElement.classList.add('bg-purple-100');
+            });
 
-                dropZone.addEventListener('dragleave', () => {
-                    dropZone.parentElement.classList.remove('bg-purple-100');
-                });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.parentElement.classList.remove('bg-purple-100');
+            });
 
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    dropZone.parentElement.classList.remove('bg-purple-100');
-                    const files = e.dataTransfer.files;
-                    if (files.length > 0) {
-                        fileInput.files = files;
-                        const event = new Event('change', {
-                            bubbles: true
-                        });
-                        fileInput.dispatchEvent(event);
-                    }
-                });
-            }
-        });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.parentElement.classList.remove('bg-purple-100');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    const event = new Event('change', {
+                        bubbles: true
+                    });
+                    fileInput.dispatchEvent(event);
+                }
+            });
+        }
+    });
 
-        // Close modal when clicking outside
-        document.addEventListener('click', function (event) {
-            const modal = document.getElementById('treatmentModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        });
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('treatmentModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
 
-        // Auto open modal if edit parameter exists
-        window.addEventListener('load', function () {
-            <?php if ($edit_treatment): ?>
-                editTreatment(
-                    <?php echo $edit_treatment['id']; ?>,
-                    "<?php echo addslashes($edit_treatment['name']); ?>",
-                    <?php echo $edit_treatment['price']; ?>,
-                    <?php echo $edit_treatment['duration']; ?>,
-                    <?php echo $edit_treatment['category_id'] ?: 'null'; ?>
-                );
-            <?php endif; ?>
-        });
+    // Auto open modal if edit parameter exists
+    window.addEventListener('load', function() {
+        <?php if ($edit_treatment): ?>
+        editTreatment(
+            <?php echo $edit_treatment['id']; ?>,
+            "<?php echo addslashes($edit_treatment['name']); ?>",
+            <?php echo $edit_treatment['price']; ?>,
+            <?php echo $edit_treatment['duration']; ?>,
+            <?php echo $edit_treatment['category_id'] ?: 'null'; ?>
+        );
+        <?php endif; ?>
+    });
     </script>
 </head>
 
@@ -271,37 +272,31 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
             <nav class="px-4">
                 <a href="dashboard.php"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $page == 'dashboard' ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100'; ?>">
-                    <span class="mr-3">📊</span>
                     <span>Dashboard</span>
                 </a>
 
                 <a href="admin.php?page=bookings"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $page == 'bookings' ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100'; ?>">
-                    <span class="mr-3">📅</span>
                     <span>Kelola Booking</span>
                 </a>
 
                 <a href="categories.php"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    <span class="mr-3">🏷️</span>
                     <span>Kelola Kategori</span>
                 </a>
 
                 <a href="admin.php?page=treatments"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $page == 'treatments' ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100'; ?>">
-                    <span class="mr-3">💆</span>
                     <span>Kelola Treatment</span>
                 </a>
 
                 <a href="therapists.php"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    <span class="mr-3">👨‍⚕️</span>
                     <span>Kelola Terapis</span>
                 </a>
 
                 <a href="admin.php?page=members"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $page == 'members' ? 'bg-purple-600 text-white' : 'text-gray-700 hover:bg-gray-100'; ?>">
-                    <span class="mr-3">👥</span>
                     <span>Kelola Member</span>
                 </a>
             </nav>
@@ -309,11 +304,9 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
             <div class="px-4 mt-8 pt-8 border-t">
                 <a href="../index.php"
                     class="flex items-center px-4 py-3 mb-2 text-gray-700 rounded-lg hover:bg-gray-100">
-                    <span class="mr-3">🏠</span>
                     <span>Halaman Utama</span>
                 </a>
                 <a href="../logout.php" class="flex items-center px-4 py-3 text-red-600 rounded-lg hover:bg-red-50">
-                    <span class="mr-3">🚪</span>
                     <span>Logout</span>
                 </a>
             </div>
@@ -338,22 +331,34 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
 
             <?php if ($page == 'bookings'): ?>
 
-                <!-- Bookings Page -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50 border-b">
-                                <tr>
-                                    <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
-                                    <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">Member & Treatment</th>
-                                    <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">Jadwal</th>
-                                    <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
-                                    <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">Pembayaran</th>
-                                    <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <?php
+            <!-- Bookings Page -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b">
+                            <tr>
+                                <th
+                                    class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    ID</th>
+                                <th
+                                    class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Member & Treatment</th>
+                                <th
+                                    class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Jadwal</th>
+                                <th
+                                    class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Status</th>
+                                <th
+                                    class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Pembayaran</th>
+                                <th
+                                    class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <?php
                                 $sql = "SELECT b.*, u.username, t.name as treat, tr.proof_image, tr.payment_status 
                                     FROM bookings b
                                     JOIN users u ON b.user_id=u.id
@@ -418,132 +423,140 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                 </tr>";
                                 }
                                 ?>
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
             <?php elseif ($page == 'treatments'): ?>
 
-                <!-- Treatments Page -->
-                <!-- Button Tambah Treatment -->
-                <div class="mb-4 md:mb-6">
-                    <button onclick="openModal()"
-                        class="w-full md:w-auto px-4 md:px-6 py-2 md:py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-md text-sm md:text-base">
-                        ➕ Tambah Treatment Baru
-                    </button>
-                </div>
+            <!-- Treatments Page -->
+            <!-- Button Tambah Treatment -->
+            <div class="mb-4 md:mb-6">
+                <button onclick="openModal()"
+                    class="w-full md:w-auto px-4 md:px-6 py-2 md:py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-md text-sm md:text-base">
+                    ➕ Tambah Treatment Baru
+                </button>
+            </div>
 
-                <!-- Modal Tambah/Edit Treatment -->
-                <div id="treatmentModal"
-                    class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                        <div class="flex items-center justify-between p-4 md:p-6 border-b sticky top-0 bg-white">
-                            <h3 id="modalTitle" class="text-lg md:text-xl font-semibold text-gray-800">
-                                ➕ Tambah Treatment Baru
-                            </h3>
-                            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
+            <!-- Modal Tambah/Edit Treatment -->
+            <div id="treatmentModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <div class="flex items-center justify-between p-4 md:p-6 border-b sticky top-0 bg-white">
+                        <h3 id="modalTitle" class="text-lg md:text-xl font-semibold text-gray-800">
+                            ➕ Tambah Treatment Baru
+                        </h3>
+                        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
 
-                        <form method="POST" id="treatmentForm" class="p-4 md:p-6" enctype="multipart/form-data">
-                            <input type="hidden" id="treatmentId" name="id" value="">
+                    <form method="POST" id="treatmentForm" class="p-4 md:p-6" enctype="multipart/form-data">
+                        <input type="hidden" id="treatmentId" name="id" value="">
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Treatment</label>
-                                    <input type="text" id="treatmentName" name="name"
-                                        class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base"
-                                        required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Harga (Rp)</label>
-                                    <input type="number" id="treatmentPrice" name="price"
-                                        class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Menit)</label>
-                                <input type="number" id="treatmentDuration" name="duration" value="60"
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Treatment</label>
+                                <input type="text" id="treatmentName" name="name"
                                     class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base"
                                     required>
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Harga (Rp)</label>
+                                <input type="number" id="treatmentPrice" name="price"
+                                    class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base"
+                                    required>
+                            </div>
+                        </div>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Kategori Treatment</label>
-                                <select id="treatmentCategory" name="category_id"
-                                    class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base">
-                                    <option value="">-- Tanpa Kategori --</option>
-                                    <?php
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Durasi (Menit)</label>
+                            <input type="number" id="treatmentDuration" name="duration" value="60"
+                                class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base"
+                                required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Kategori Treatment</label>
+                            <select id="treatmentCategory" name="category_id"
+                                class="w-full px-3 md:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base">
+                                <option value="">-- Tanpa Kategori --</option>
+                                <?php
                                     $categories = $pdo->query("SELECT * FROM categories ORDER BY name");
                                     while ($c = $categories->fetch()) {
                                         echo "<option value='{$c['id']}'>{$c['name']}</option>";
                                     }
                                     ?>
-                                </select>
-                            </div>
+                            </select>
+                        </div>
 
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Treatment</label>
-                                <div class="flex items-center justify-center w-full">
-                                    <label
-                                        class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-purple-300 rounded-lg cursor-pointer bg-purple-50 hover:bg-purple-100">
-                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <svg class="w-8 h-8 text-purple-500 mb-2" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 4v16m8-8H4"></path>
-                                            </svg>
-                                            <p class="text-xs md:text-sm text-gray-600"><span class="font-semibold">Klik untuk
-                                                    upload</span> atau drag gambar</p>
-                                            <p class="text-xs text-gray-500 mt-1">JPG, PNG atau GIF (Max. 5MB)</p>
-                                        </div>
-                                        <input id="treatmentImage" name="image" type="file" class="hidden" accept="image/*">
-                                    </label>
-                                </div>
-                                <div id="imagePreview" class="mt-4 hidden flex justify-center">
-                                    <img id="previewImg" src="" alt="Preview" class="h-32 object-contain rounded-lg">
-                                </div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Treatment</label>
+                            <div class="flex items-center justify-center w-full">
+                                <label
+                                    class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-purple-300 rounded-lg cursor-pointer bg-purple-50 hover:bg-purple-100">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg class="w-8 h-8 text-purple-500 mb-2" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        <p class="text-xs md:text-sm text-gray-600"><span class="font-semibold">Klik
+                                                untuk
+                                                upload</span> atau drag gambar</p>
+                                        <p class="text-xs text-gray-500 mt-1">JPG, PNG atau GIF (Max. 5MB)</p>
+                                    </div>
+                                    <input id="treatmentImage" name="image" type="file" class="hidden" accept="image/*">
+                                </label>
                             </div>
+                            <div id="imagePreview" class="mt-4 hidden flex justify-center">
+                                <img id="previewImg" src="" alt="Preview" class="h-32 object-contain rounded-lg">
+                            </div>
+                        </div>
 
-                            <div class="flex flex-col md:flex-row gap-2 justify-end">
-                                <button type="button" onclick="closeModal()"
-                                    class="w-full md:w-auto px-4 md:px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium text-sm md:text-base">
-                                    Batal
-                                </button>
-                                <button type="submit" id="submitBtn" name="add_treatment"
-                                    class="w-full md:w-auto px-4 md:px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium text-sm md:text-base">
-                                    ➕ Tambah Treatment
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="flex flex-col md:flex-row gap-2 justify-end">
+                            <button type="button" onclick="closeModal()"
+                                class="w-full md:w-auto px-4 md:px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium text-sm md:text-base">
+                                Batal
+                            </button>
+                            <button type="submit" id="submitBtn" name="add_treatment"
+                                class="w-full md:w-auto px-4 md:px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium text-sm md:text-base">
+                                ➕ Tambah Treatment
+                            </button>
+                        </div>
+                    </form>
                 </div>
+            </div>
 
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="px-4 md:px-6 py-3 md:py-4 border-b">
-                        <h3 class="text-base md:text-lg font-semibold text-gray-800">Daftar Treatment</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Gambar</th>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Nama Treatment</th>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Harga</th>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase hidden md:table-cell">Durasi</th>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <?php
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="px-4 md:px-6 py-3 md:py-4 border-b">
+                    <h3 class="text-base md:text-lg font-semibold text-gray-800">Daftar Treatment</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID
+                                </th>
+                                <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Gambar</th>
+                                <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Nama Treatment</th>
+                                <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Harga</th>
+                                <th
+                                    class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase hidden md:table-cell">
+                                    Durasi</th>
+                                <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <?php
                                 $treatments = $pdo->query("
                                     SELECT t.*, c.name AS category_name
                                     FROM treatments t
@@ -587,31 +600,38 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                     </tr>";
                                 }
                                 ?>
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
             <?php elseif ($page == 'members'): ?>
 
-                <!-- Members Page -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="px-4 md:px-6 py-3 md:py-4 border-b">
-                        <h3 class="text-base md:text-lg font-semibold text-gray-800">Daftar Member</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID</th>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Nama Member</th>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase hidden md:table-cell">Email</th>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase hidden lg:table-cell">Tanggal Bergabung</th>
-                                    <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <?php
+            <!-- Members Page -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="px-4 md:px-6 py-3 md:py-4 border-b">
+                    <h3 class="text-base md:text-lg font-semibold text-gray-800">Daftar Member</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">ID
+                                </th>
+                                <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Nama Member</th>
+                                <th
+                                    class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase hidden md:table-cell">
+                                    Email</th>
+                                <th
+                                    class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase hidden lg:table-cell">
+                                    Tanggal Bergabung</th>
+                                <th class="px-3 md:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                                    Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <?php
                                 $members = $pdo->query("SELECT * FROM users WHERE role='member' ORDER BY created_at DESC");
 
                                 if ($members->rowCount() > 0) {
@@ -646,41 +666,41 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                     </tr>";
                                 }
                                 ?>
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
             <?php endif; ?>
         </main>
     </div>
 
     <script>
-        // Mobile Menu Toggle
-        const menuBtn = document.getElementById('menuBtn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
+    // Mobile Menu Toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
 
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('hidden');
-        });
+    menuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('hidden');
+    });
 
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            overlay.classList.add('hidden');
-        });
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+        overlay.classList.add('hidden');
+    });
 
-        // Close sidebar when clicking nav link on mobile
-        const navLinks = sidebar.querySelectorAll('a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth < 768) {
-                    sidebar.classList.remove('active');
-                    overlay.classList.add('hidden');
-                }
-            });
+    // Close sidebar when clicking nav link on mobile
+    const navLinks = sidebar.querySelectorAll('a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth < 768) {
+                sidebar.classList.remove('active');
+                overlay.classList.add('hidden');
+            }
         });
+    });
     </script>
 </body>
 
