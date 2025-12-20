@@ -16,66 +16,66 @@ if (!isset($pdo)) {
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1a1a1a',
-                        secondary: '#f5f5f5',
-                        accent: '#d4a574',
-                    },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-                    },
-                }
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#1a1a1a',
+                    secondary: '#f5f5f5',
+                    accent: '#d4a574',
+                },
+                fontFamily: {
+                    sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                },
             }
         }
+    }
     </script>
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
+    html {
+        scroll-behavior: smooth;
+    }
 
-        * {
-            transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-        }
+    * {
+        transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
 
-        .navbar-blur {
-            backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.95);
-        }
+    .navbar-blur {
+        backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.95);
+    }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    @keyframes fadeInUp {
+        from {
             opacity: 0;
+            transform: translateY(30px);
         }
 
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
 
-        .faq-answer {
-            transition: max-height 0.3s ease;
-        }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        opacity: 0;
+    }
 
-        .faq-icon {
-            transition: transform 0.3s ease;
-        }
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .faq-answer {
+        transition: max-height 0.3s ease;
+    }
+
+    .faq-icon {
+        transition: transform 0.3s ease;
+    }
     </style>
 </head>
 
@@ -103,19 +103,19 @@ if (!isset($pdo)) {
                         class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Treatment</a>
 
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="dashboard/member.php"
-                            class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Dashboard</a>
-                        <a href="logout.php"
-                            class="px-6 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white transition-all text-sm font-medium">
-                            Logout
-                        </a>
+                    <a href="dashboard/member.php"
+                        class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Dashboard</a>
+                    <a href="logout.php"
+                        class="px-6 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white transition-all text-sm font-medium">
+                        Logout
+                    </a>
                     <?php else: ?>
-                        <a href="login.php"
-                            class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Login</a>
-                        <a href="register.php"
-                            class="px-6 py-2.5 bg-primary text-white hover:bg-black transition-all text-sm font-medium">
-                            Daftar
-                        </a>
+                    <a href="login.php"
+                        class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Login</a>
+                    <a href="register.php"
+                        class="px-6 py-2.5 bg-primary text-white hover:bg-black transition-all text-sm font-medium">
+                        Daftar
+                    </a>
                     <?php endif; ?>
                 </div>
 
@@ -133,14 +133,14 @@ if (!isset($pdo)) {
                     <a href="index.php" class="text-gray-600 hover:text-primary font-medium text-sm">Home</a>
                     <a href="treatments.php" class="text-gray-600 hover:text-primary font-medium text-sm">Treatment</a>
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="dashboard/member.php"
-                            class="text-gray-600 hover:text-primary font-medium text-sm">Dashboard</a>
-                        <a href="logout.php"
-                            class="px-6 py-2.5 border border-primary text-primary text-center text-sm font-medium">Logout</a>
+                    <a href="dashboard/member.php"
+                        class="text-gray-600 hover:text-primary font-medium text-sm">Dashboard</a>
+                    <a href="logout.php"
+                        class="px-6 py-2.5 border border-primary text-primary text-center text-sm font-medium">Logout</a>
                     <?php else: ?>
-                        <a href="login.php" class="text-gray-600 hover:text-primary font-medium text-sm">Login</a>
-                        <a href="register.php"
-                            class="px-6 py-2.5 bg-primary text-white text-center text-sm font-medium">Daftar</a>
+                    <a href="login.php" class="text-gray-600 hover:text-primary font-medium text-sm">Login</a>
+                    <a href="register.php"
+                        class="px-6 py-2.5 bg-primary text-white text-center text-sm font-medium">Daftar</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -336,68 +336,68 @@ if (!isset($pdo)) {
                             // Stagger animation delay
                             $delay = ($index % 4) * 0.1;
                             ?>
-                            <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 animate-fade-in-up"
-                                style="animation-delay: <?= $delay ?>s">
+                <div class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 animate-fade-in-up"
+                    style="animation-delay: <?= $delay ?>s">
 
-                                <!-- Image Container -->
-                                <div class="relative h-56 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
-                                    <?php if ($image_src): ?>
-                                        <img src="<?= $image_src ?>" alt="<?= htmlspecialchars($row['name']) ?>"
-                                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300">
-                                        </div>
-                                    <?php else: ?>
-                                        <div
-                                            class="w-full h-full flex items-center justify-center text-5xl font-light text-accent/80 group-hover:text-accent transition-colors">
-                                            <?= $initial ?>
-                                        </div>
-                                    <?php endif; ?>
+                    <!-- Image Container -->
+                    <div class="relative h-56 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                        <?php if ($image_src): ?>
+                        <img src="<?= $image_src ?>" alt="<?= htmlspecialchars($row['name']) ?>"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300">
+                        </div>
+                        <?php else: ?>
+                        <div
+                            class="w-full h-full flex items-center justify-center text-5xl font-light text-accent/80 group-hover:text-accent transition-colors">
+                            <?= $initial ?>
+                        </div>
+                        <?php endif; ?>
 
-                                    <!-- Category Badge -->
-                                    <?php if ($row['category_name']): ?>
-                                        <div
-                                            class="absolute top-3 right-3 backdrop-blur-md bg-white/90 text-accent px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
-                                            <?= htmlspecialchars($row['category_name']) ?>
-                                        </div>
-                                    <?php endif; ?>
+                        <!-- Category Badge -->
+                        <?php if ($row['category_name']): ?>
+                        <div
+                            class="absolute top-3 right-3 backdrop-blur-md bg-white/90 text-accent px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
+                            <?= htmlspecialchars($row['category_name']) ?>
+                        </div>
+                        <?php endif; ?>
 
-                                    <!-- Hover Overlay -->
-                                    <div
-                                        class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    </div>
-                                </div>
+                        <!-- Hover Overlay -->
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        </div>
+                    </div>
 
-                                <!-- Content -->
-                                <div class="p-5">
-                                    <h3 class="text-lg font-medium mb-3 line-clamp-2 group-hover:text-accent transition-colors">
-                                        <?= htmlspecialchars($row['name']) ?>
-                                    </h3>
+                    <!-- Content -->
+                    <div class="p-5">
+                        <h3 class="text-lg font-medium mb-3 line-clamp-2 group-hover:text-accent transition-colors">
+                            <?= htmlspecialchars($row['name']) ?>
+                        </h3>
 
-                                    <!-- Price & Duration -->
-                                    <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
-                                        <div>
-                                            <p class="text-xs text-gray-500 mb-0.5">Mulai dari</p>
-                                            <p class="text-xl font-bold text-accent">
-                                                Rp <?= number_format($row['price'], 0, ',', '.') ?>
-                                            </p>
-                                        </div>
-                                        <div class="flex items-center gap-1.5 text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
-                                            <i class="fas fa-clock text-xs"></i>
-                                            <span class="text-xs font-medium"><?= $row['duration'] ?>'</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- CTA Button -->
-                                    <a href="login.php"
-                                        class="group/btn w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl hover:bg-accent transition-all text-sm font-medium shadow-sm hover:shadow-md">
-                                        <i class="fas fa-calendar-check text-xs"></i>
-                                        <span>Book Now</span>
-                                        <i
-                                            class="fas fa-arrow-right text-xs opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all"></i>
-                                    </a>
-                                </div>
+                        <!-- Price & Duration -->
+                        <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+                            <div>
+                                <p class="text-xs text-gray-500 mb-0.5">Mulai dari</p>
+                                <p class="text-xl font-bold text-accent">
+                                    Rp <?= number_format($row['price'], 0, ',', '.') ?>
+                                </p>
                             </div>
-                            <?php
+                            <div class="flex items-center gap-1.5 text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+                                <i class="fas fa-clock text-xs"></i>
+                                <span class="text-xs font-medium"><?= $row['duration'] ?>'</span>
+                            </div>
+                        </div>
+
+                        <!-- CTA Button -->
+                        <a href="login.php"
+                            class="group/btn w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl hover:bg-accent transition-all text-sm font-medium shadow-sm hover:shadow-md">
+                            <i class="fas fa-calendar-check text-xs"></i>
+                            <span>Book Now</span>
+                            <i
+                                class="fas fa-arrow-right text-xs opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all"></i>
+                        </a>
+                    </div>
+                </div>
+                <?php
                         }
                     } else {
                         echo "<div class='col-span-full text-center py-16'>
@@ -422,18 +422,18 @@ if (!isset($pdo)) {
 
                 if ($total_treatments > 8) {
                     ?>
-                    <div class="text-center mt-12 lg:mt-16">
-                        <a href="treatments.php"
-                            class="group inline-flex items-center gap-3 px-8 py-4 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-full transition-all font-medium text-sm shadow-sm hover:shadow-lg">
-                            <i class="fas fa-th-large"></i>
-                            <span>Lihat Semua Treatment</span>
-                            <span
-                                class="inline-flex items-center justify-center w-6 h-6 bg-primary text-white group-hover:bg-white group-hover:text-primary rounded-full text-xs font-bold transition-all">
-                                <?= $total_treatments ?>
-                            </span>
-                        </a>
-                    </div>
-                    <?php
+            <div class="text-center mt-12 lg:mt-16">
+                <a href="treatments.php"
+                    class="group inline-flex items-center gap-3 px-8 py-4 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-full transition-all font-medium text-sm shadow-sm hover:shadow-lg">
+                    <i class="fas fa-th-large"></i>
+                    <span>Lihat Semua Treatment</span>
+                    <span
+                        class="inline-flex items-center justify-center w-6 h-6 bg-primary text-white group-hover:bg-white group-hover:text-primary rounded-full text-xs font-bold transition-all">
+                        <?= $total_treatments ?>
+                    </span>
+                </a>
+            </div>
+            <?php
                 }
             } catch (PDOException $e) {
             }
@@ -470,32 +470,32 @@ if (!isset($pdo)) {
                                         . "&background=random&color=fff";
                                     ?>
 
-                                    <div class="testimonial-card flex-shrink-0 w-full">
-                                        <div class="bg-white border border-gray-200 p-12">
-                                            <div class="mb-6 text-yellow-500">
-                                                <?php for ($i = 0; $i < $row['rating']; $i++): ?>
-                                                    <i class="fas fa-star"></i>
-                                                <?php endfor; ?>
-                                            </div>
+                        <div class="testimonial-card flex-shrink-0 w-full">
+                            <div class="bg-white border border-gray-200 p-12">
+                                <div class="mb-6 text-yellow-500">
+                                    <?php for ($i = 0; $i < $row['rating']; $i++): ?>
+                                    <i class="fas fa-star"></i>
+                                    <?php endfor; ?>
+                                </div>
 
-                                            <p class="text-lg italic text-primary leading-relaxed mb-8">
-                                                "<?= htmlspecialchars($row['feedback']) ?>"
-                                            </p>
+                                <p class="text-lg italic text-primary leading-relaxed mb-8">
+                                    "<?= htmlspecialchars($row['feedback']) ?>"
+                                </p>
 
-                                            <div class="flex items-center gap-4">
-                                                <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200">
-                                                    <img src="<?= $avatar_url ?>" alt="<?= htmlspecialchars($row['name']) ?>"
-                                                        class="w-full h-full object-cover">
-                                                </div>
-                                                <div>
-                                                    <h4 class="font-semibold"><?= htmlspecialchars($row['name']) ?></h4>
-                                                    <p class="text-sm text-gray-600">Pelanggan Terverifikasi</p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200">
+                                        <img src="<?= $avatar_url ?>" alt="<?= htmlspecialchars($row['name']) ?>"
+                                            class="w-full h-full object-cover">
                                     </div>
+                                    <div>
+                                        <h4 class="font-semibold"><?= htmlspecialchars($row['name']) ?></h4>
+                                        <p class="text-sm text-gray-600">Pelanggan Terverifikasi</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <?php
+                        <?php
                                 }
                             } else {
                                 echo "<p class='text-center text-gray-600'>Belum ada ulasan.</p>";
@@ -552,8 +552,8 @@ if (!isset($pdo)) {
                     </button>
                     <div class="faq-answer max-h-0 overflow-hidden transition-all duration-300">
                         <div class="px-6 pb-6 text-gray-600 leading-relaxed">
-                            Kami menerima pembayaran tunai, transfer bank (BCA, Mandiri, BRI), e-wallet (GoPay, OVO,
-                            DANA, ShopeePay), dan QRIS. Pembayaran dilakukan setelah treatment selesai.
+                            Kami menerima pembayaran tunai, transfer bank (BCA), dan QRIS. Pembayaran dilakukan setelah
+                            treatment selesai.
                         </div>
                     </div>
                 </div>
@@ -623,7 +623,7 @@ if (!isset($pdo)) {
             <!-- Contact CTA -->
             <div class="mt-12 text-center p-8 bg-secondary rounded-2xl">
                 <p class="text-gray-600 mb-4">Masih ada pertanyaan lain?</p>
-                <a href="https://wa.me/62xxx"
+                <a href="https://wa.me/895609706131"
                     class="inline-flex items-center gap-2 px-8 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition-all font-medium">
                     <i class="fab fa-whatsapp"></i>
                     <span>Hubungi Kami</span>
@@ -650,170 +650,178 @@ if (!isset($pdo)) {
 
     <!-- Scripts -->
     <script>
-        // Mobile Menu Toggle
-        document.querySelector('.mobile-toggle').addEventListener('click', function () {
-            document.querySelector('.mobile-menu').classList.toggle('hidden');
+    // Mobile Menu Toggle
+    document.querySelector('.mobile-toggle').addEventListener('click', function() {
+        document.querySelector('.mobile-menu').classList.toggle('hidden');
+    });
+
+    // Testimonial Slider
+    (function() {
+        const wrapper = document.querySelector('.testimonial-wrapper');
+        const dotsContainer = document.querySelector('.slider-dots');
+
+        if (!wrapper) {
+            if (dotsContainer) dotsContainer.classList.add('hidden');
+            return;
+        }
+
+        const cards = wrapper.querySelectorAll('.testimonial-card');
+        const totalSlides = cards.length;
+
+        if (totalSlides === 0) {
+            if (dotsContainer) dotsContainer.classList.add('hidden');
+            return;
+        }
+
+        let currentSlide = 0;
+        let isDragging = false;
+        let startX = 0;
+        let slideWidth = 0;
+        let slideInterval = null;
+
+        function calculateSizes() {
+            const slider = wrapper.closest('.testimonials-slider');
+            const containerWidth = slider ? slider.clientWidth : wrapper.clientWidth;
+            slideWidth = containerWidth + 32; // 32px gap
+        }
+
+        function createDots() {
+            if (!dotsContainer) return;
+            dotsContainer.innerHTML = '';
+            if (totalSlides <= 1) {
+                dotsContainer.classList.add('hidden');
+                return;
+            }
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('span');
+                dot.className = i === 0 ?
+                    'w-6 h-2 bg-accent transition-all cursor-pointer' :
+                    'w-2 h-2 bg-gray-300 rounded-full transition-all cursor-pointer';
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            if (!dotsContainer) return;
+            const dots = dotsContainer.querySelectorAll('span');
+            dots.forEach((dot, i) => {
+                if (i === currentSlide) {
+                    dot.className = 'w-6 h-2 bg-accent transition-all cursor-pointer';
+                } else {
+                    dot.className = 'w-2 h-2 bg-gray-300 rounded-full transition-all cursor-pointer';
+                }
+            });
+        }
+
+        function updateSlider(animate = true) {
+            wrapper.style.transition = animate ? 'transform 0.6s cubic-bezier(0.2, 0.9, 0.2, 1)' : 'none';
+            const x = -currentSlide * slideWidth;
+            wrapper.style.transform = `translateX(${x}px)`;
+            updateDots();
+        }
+
+        function goToSlide(n) {
+            currentSlide = Math.max(0, Math.min(n, totalSlides - 1));
+            updateSlider();
+            resetAutoSlide();
+        }
+
+        function autoSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlider();
+        }
+
+        function resetAutoSlide() {
+            if (slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(autoSlide, 4000);
+        }
+
+        function startDrag(e) {
+            if (e.type === 'mousedown') e.preventDefault();
+            clearInterval(slideInterval);
+            isDragging = true;
+            startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            wrapper.style.transition = 'none';
+            calculateSizes();
+        }
+
+        function dragMove(e) {
+            if (!isDragging) return;
+            const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            const diff = currentX - startX;
+            const x = -currentSlide * slideWidth + diff;
+            wrapper.style.transform = `translateX(${x}px)`;
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const endX = e.type.includes('mouse') ? e.pageX : (e.changedTouches ? e.changedTouches[0].clientX :
+                startX);
+            const diff = endX - startX;
+            if (diff > 70 && currentSlide > 0) currentSlide--;
+            else if (diff < -70 && currentSlide < totalSlides - 1) currentSlide++;
+            updateSlider(true);
+            resetAutoSlide();
+        }
+
+        calculateSizes();
+        createDots();
+        updateSlider(false);
+        resetAutoSlide();
+
+        wrapper.addEventListener('touchstart', startDrag, {
+            passive: true
+        });
+        wrapper.addEventListener('mousedown', startDrag);
+        wrapper.addEventListener('touchmove', dragMove, {
+            passive: true
+        });
+        wrapper.addEventListener('mousemove', dragMove);
+        wrapper.addEventListener('touchend', endDrag);
+        wrapper.addEventListener('mouseup', endDrag);
+        wrapper.addEventListener('mouseleave', endDrag);
+
+        window.addEventListener('resize', () => {
+            calculateSizes();
+            updateSlider(false);
         });
 
-        // Testimonial Slider
-        (function () {
-            const wrapper = document.querySelector('.testimonial-wrapper');
-            const dotsContainer = document.querySelector('.slider-dots');
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('.faq-item');
 
-            if (!wrapper) {
-                if (dotsContainer) dotsContainer.classList.add('hidden');
-                return;
-            }
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+                const icon = item.querySelector('.faq-icon');
 
-            const cards = wrapper.querySelectorAll('.testimonial-card');
-            const totalSlides = cards.length;
+                question.addEventListener('click', () => {
+                    const isOpen = answer.style.maxHeight && answer.style.maxHeight !==
+                        '0px';
 
-            if (totalSlides === 0) {
-                if (dotsContainer) dotsContainer.classList.add('hidden');
-                return;
-            }
-
-            let currentSlide = 0;
-            let isDragging = false;
-            let startX = 0;
-            let slideWidth = 0;
-            let slideInterval = null;
-
-            function calculateSizes() {
-                const slider = wrapper.closest('.testimonials-slider');
-                const containerWidth = slider ? slider.clientWidth : wrapper.clientWidth;
-                slideWidth = containerWidth + 32; // 32px gap
-            }
-
-            function createDots() {
-                if (!dotsContainer) return;
-                dotsContainer.innerHTML = '';
-                if (totalSlides <= 1) {
-                    dotsContainer.classList.add('hidden');
-                    return;
-                }
-                for (let i = 0; i < totalSlides; i++) {
-                    const dot = document.createElement('span');
-                    dot.className = i === 0
-                        ? 'w-6 h-2 bg-accent transition-all cursor-pointer'
-                        : 'w-2 h-2 bg-gray-300 rounded-full transition-all cursor-pointer';
-                    dot.addEventListener('click', () => goToSlide(i));
-                    dotsContainer.appendChild(dot);
-                }
-            }
-
-            function updateDots() {
-                if (!dotsContainer) return;
-                const dots = dotsContainer.querySelectorAll('span');
-                dots.forEach((dot, i) => {
-                    if (i === currentSlide) {
-                        dot.className = 'w-6 h-2 bg-accent transition-all cursor-pointer';
-                    } else {
-                        dot.className = 'w-2 h-2 bg-gray-300 rounded-full transition-all cursor-pointer';
-                    }
-                });
-            }
-
-            function updateSlider(animate = true) {
-                wrapper.style.transition = animate ? 'transform 0.6s cubic-bezier(0.2, 0.9, 0.2, 1)' : 'none';
-                const x = -currentSlide * slideWidth;
-                wrapper.style.transform = `translateX(${x}px)`;
-                updateDots();
-            }
-
-            function goToSlide(n) {
-                currentSlide = Math.max(0, Math.min(n, totalSlides - 1));
-                updateSlider();
-                resetAutoSlide();
-            }
-
-            function autoSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                updateSlider();
-            }
-
-            function resetAutoSlide() {
-                if (slideInterval) clearInterval(slideInterval);
-                slideInterval = setInterval(autoSlide, 4000);
-            }
-
-            function startDrag(e) {
-                if (e.type === 'mousedown') e.preventDefault();
-                clearInterval(slideInterval);
-                isDragging = true;
-                startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-                wrapper.style.transition = 'none';
-                calculateSizes();
-            }
-
-            function dragMove(e) {
-                if (!isDragging) return;
-                const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-                const diff = currentX - startX;
-                const x = -currentSlide * slideWidth + diff;
-                wrapper.style.transform = `translateX(${x}px)`;
-            }
-
-            function endDrag(e) {
-                if (!isDragging) return;
-                isDragging = false;
-                const endX = e.type.includes('mouse') ? e.pageX : (e.changedTouches ? e.changedTouches[0].clientX : startX);
-                const diff = endX - startX;
-                if (diff > 70 && currentSlide > 0) currentSlide--;
-                else if (diff < -70 && currentSlide < totalSlides - 1) currentSlide++;
-                updateSlider(true);
-                resetAutoSlide();
-            }
-
-            calculateSizes();
-            createDots();
-            updateSlider(false);
-            resetAutoSlide();
-
-            wrapper.addEventListener('touchstart', startDrag, { passive: true });
-            wrapper.addEventListener('mousedown', startDrag);
-            wrapper.addEventListener('touchmove', dragMove, { passive: true });
-            wrapper.addEventListener('mousemove', dragMove);
-            wrapper.addEventListener('touchend', endDrag);
-            wrapper.addEventListener('mouseup', endDrag);
-            wrapper.addEventListener('mouseleave', endDrag);
-
-            window.addEventListener('resize', () => {
-                calculateSizes();
-                updateSlider(false);
-            });
-
-            document.addEventListener('DOMContentLoaded', function () {
-                const faqItems = document.querySelectorAll('.faq-item');
-
-                faqItems.forEach(item => {
-                    const question = item.querySelector('.faq-question');
-                    const answer = item.querySelector('.faq-answer');
-                    const icon = item.querySelector('.faq-icon');
-
-                    question.addEventListener('click', () => {
-                        const isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
-
-                        // Close all others
-                        faqItems.forEach(otherItem => {
-                            if (otherItem !== item) {
-                                otherItem.querySelector('.faq-answer').style.maxHeight = '0';
-                                otherItem.querySelector('.faq-icon').style.transform = 'rotate(0deg)';
-                            }
-                        });
-
-                        // Toggle current
-                        if (isOpen) {
-                            answer.style.maxHeight = '0';
-                            icon.style.transform = 'rotate(0deg)';
-                        } else {
-                            answer.style.maxHeight = answer.scrollHeight + 'px';
-                            icon.style.transform = 'rotate(180deg)';
+                    // Close all others
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.querySelector('.faq-answer').style.maxHeight =
+                                '0';
+                            otherItem.querySelector('.faq-icon').style.transform =
+                                'rotate(0deg)';
                         }
                     });
+
+                    // Toggle current
+                    if (isOpen) {
+                        answer.style.maxHeight = '0';
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                        icon.style.transform = 'rotate(180deg)';
+                    }
                 });
             });
-        })();
+        });
+    })();
     </script>
 
 </body>
