@@ -2,7 +2,7 @@
 require '../config.php';
 checkAccess('admin');
 
-$editData = null; // Variabel penampung data edit
+$editData = null;
 
 // --- 1. LOGIC TAMBAH DATA ---
 if (isset($_POST['add'])) {
@@ -19,7 +19,7 @@ if (isset($_POST['add'])) {
     }
 }
 
-// --- 2. LOGIC UPDATE DATA (FITUR BARU) ---
+// --- 2. LOGIC UPDATE DATA ---
 if (isset($_POST['update'])) {
     $id = $_POST['id'];
     $name = $_POST['name'];
@@ -35,7 +35,7 @@ if (isset($_POST['update'])) {
     }
 }
 
-// --- 3. LOGIC HAPUS DATA (DENGAN PERBAIKAN ERROR 1451) ---
+// --- 3. LOGIC HAPUS DATA ---
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     try {
@@ -54,7 +54,7 @@ if (isset($_GET['delete'])) {
     }
 }
 
-// --- 4. LOGIC AMBIL DATA EDIT ---
+// --- 4. LOGIC EDIT ---
 if (isset($_GET['edit'])) {
     $stmt = $pdo->prepare("SELECT * FROM treatments WHERE id = ?");
     $stmt->execute([$_GET['edit']]);

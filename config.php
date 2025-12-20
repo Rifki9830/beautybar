@@ -3,7 +3,7 @@ session_start();
 $host = 'localhost';
 $db   = 'beautybar_db';
 $user = 'root';
-$pass = ''; // Sesuaikan password DB Anda (XAMPP biasanya kosong)
+$pass = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);

@@ -15,15 +15,11 @@ if (isset($_POST['booking'])) {
     $check->execute([$ther_id, $date, $time]);
     
     if ($check->fetchColumn() > 0) {
-        $msg = "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4' role='alert'>
-                    <strong>Maaf!</strong> Terapis sudah dibooking pada jam tersebut. Pilih jam lain!
-                </div>";
+        $msg = "error|Maaf! Terapis sudah dibooking pada jam tersebut. Pilih jam lain!";
     } else {
         $sql = "INSERT INTO bookings (user_id, treatment_id, therapist_id, booking_date, booking_time) VALUES (?,?,?,?,?)";
         $pdo->prepare($sql)->execute([$uid, $treat_id, $ther_id, $date, $time]);
-        $msg = "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4' role='alert'>
-                    <strong>Berhasil!</strong> Booking Anda telah dibuat. Menunggu konfirmasi admin.
-                </div>";
+        $msg = "success|Booking Anda telah dibuat. Menunggu konfirmasi admin.";
     }
 }
 
@@ -50,229 +46,277 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Dashboard - Beautybar</title>
+    <title>Member Dashboard - Beautybar.bync</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1a1a1a',
+                        secondary: '#f5f5f5',
+                        accent: '#d4a574',
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <style>
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s;
-                position: fixed;
-                z-index: 50;
-                height: 100vh;
+        html { scroll-behavior: smooth; }
+        
+        .navbar-blur {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-            .sidebar.active {
-                transform: translateX(0);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-animate {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-content {
+            animation: modalSlide 0.3s ease-out;
+        }
+
+        /* Stat Card Hover Effects */
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Table Row Hover */
+        .table-row {
+            transition: background-color 0.2s;
+        }
+
+        .table-row:hover {
+            background-color: rgba(212, 165, 116, 0.05);
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Mobile Menu Button -->
-    <button id="menuBtn" class="md:hidden fixed top-4 left-4 z-50 bg-purple-600 text-white p-3 rounded-lg shadow-lg">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
-    </button>
 
-    <!-- Overlay -->
-    <div id="overlay" class="hidden md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+<body class="font-sans text-primary bg-secondary overflow-x-hidden">
 
-    <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-64 bg-white shadow-lg">
-            <div class="p-6">
-                <h2 class="text-2xl font-bold text-purple-600">Beautybar</h2>
-                <p class="text-sm text-gray-500 mt-1">Member Area</p>
-            </div>
-            
-            <div class="px-4 py-2">
-                <div class="bg-purple-50 rounded-lg p-4 mb-4 border border-purple-100">
-                    <p class="text-sm text-gray-600">Halo,</p>
-                    <p class="font-semibold text-gray-800"><?php echo $_SESSION['name']; ?></p>
-                    <p class="text-xs text-purple-600 mt-1">Member Dashboard</p>
-                </div>
-            </div>
-
-            <nav class="px-4">
-                <a href="member.php" 
-                   class="flex items-center px-4 py-3 mb-2 rounded-lg bg-purple-600 text-white">
-                    <span class="mr-3">📅</span>
-                    <span>Dashboard & Booking</span>
+    <!-- Navigation -->
+    <nav class="navbar-blur fixed top-0 left-0 right-0 border-b border-gray-200 z-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand -->
+                <a href="../index.php" class="flex items-center gap-3">
+                    <i class="fas fa-spa text-2xl text-accent"></i>
+                    <span class="text-xl font-semibold tracking-tight">Beautybar.bync</span>
                 </a>
-            </nav>
 
-            <div class="px-4 mt-8 pt-8 border-t">
-                <a href="../index.php" class="flex items-center px-4 py-3 mb-2 text-gray-700 rounded-lg hover:bg-gray-50">
-                    <span class="mr-3">🏠</span>
-                    <span>Halaman Utama</span>
-                </a>
-                <a href="../logout.php" class="flex items-center px-4 py-3 text-red-600 rounded-lg hover:bg-red-50">
-                    <span class="mr-3">🚪</span>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 p-4 md:p-8 pt-20 md:pt-8">
-            <!-- Header -->
-            <div class="mb-6">
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Dashboard Member</h1>
-                <p class="text-gray-500 mt-1 text-sm md:text-base">Kelola booking dan transaksi Anda</p>
-            </div>
-
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
-                <!-- Total Bookings -->
-                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-5 text-white">
-                    <div class="flex items-center justify-between mb-3">
-                        <p class="text-blue-100 text-sm font-medium">Total Booking</p>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2">
-                            <span class="text-xl">📅</span>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="../index.php" class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Home</a>
+                    <a href="../treatments.php" class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Treatment</a>
+                    <a href="member.php" class="text-gray-600 hover:text-primary font-medium text-sm transition-colors relative group">
+                        Dashboard
+                        <span class="absolute -bottom-2 left-0 w-full h-0.5 bg-accent scale-x-100 transition-transform origin-left"></span>
+                    </a>
+                    <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+                        <div class="text-right">
+                            <p class="text-xs text-gray-500">Welcome,</p>
+                            <p class="text-sm font-semibold text-primary"><?php echo $_SESSION['name']; ?></p>
                         </div>
+                        <a href="../logout.php" class="px-6 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white transition-all text-sm font-medium">
+                            Logout
+                        </a>
                     </div>
-                    <h3 class="text-3xl font-bold"><?php echo $totalBookings; ?></h3>
-                    <p class="text-xs text-blue-100 mt-2">Booking keseluruhan</p>
                 </div>
 
-                <!-- Completed -->
-                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-5 text-white">
-                    <div class="flex items-center justify-between mb-3">
-                        <p class="text-green-100 text-sm font-medium">Selesai</p>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2">
-                            <span class="text-xl">✅</span>
-                        </div>
-                    </div>
-                    <h3 class="text-3xl font-bold"><?php echo $completedBookings; ?></h3>
-                    <p class="text-xs text-green-100 mt-2">Treatment selesai</p>
-                </div>
-
-                <!-- Pending -->
-                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-5 text-white">
-                    <div class="flex items-center justify-between mb-3">
-                        <p class="text-orange-100 text-sm font-medium">Menunggu</p>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2">
-                            <span class="text-xl">⏳</span>
-                        </div>
-                    </div>
-                    <h3 class="text-3xl font-bold"><?php echo $pendingBookings; ?></h3>
-                    <p class="text-xs text-orange-100 mt-2">Booking pending</p>
-                </div>
-
-                <!-- Total Spent -->
-                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-5 text-white">
-                    <div class="flex items-center justify-between mb-3">
-                        <p class="text-purple-100 text-sm font-medium">Total Belanja</p>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2">
-                            <span class="text-xl">💰</span>
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-bold">Rp <?php echo number_format($totalSpent, 0, ',', '.'); ?></h3>
-                    <p class="text-xs text-purple-100 mt-2">Total pembayaran</p>
-                </div>
-            </div>
-
-            <!-- Alert Message -->
-            <?php echo $msg; ?>
-
-            <!-- Button to Open Modal -->
-            <div class="mb-6">
-                <button id="openModalBtn" class="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition shadow-lg">
-                    ➕ Buat Booking Baru
+                <!-- Mobile Toggle -->
+                <button class="md:hidden flex flex-col gap-1.5 mobile-toggle">
+                    <span class="w-6 h-0.5 bg-primary transition-all"></span>
+                    <span class="w-6 h-0.5 bg-primary transition-all"></span>
+                    <span class="w-6 h-0.5 bg-primary transition-all"></span>
                 </button>
             </div>
 
-            <!-- Modal Popup -->
-            <div id="bookingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                    <!-- Modal Header -->
-                    <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-4 rounded-t-2xl flex items-center justify-between">
-                        <h2 class="text-xl font-bold text-white">📅 Buat Booking Baru</h2>
-                        <button id="closeModalBtn" class="text-white hover:text-gray-200">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mobile-menu pb-6">
+                <div class="flex flex-col gap-4">
+                    <div class="bg-secondary p-4 rounded-lg mb-2">
+                        <p class="text-xs text-gray-500">Welcome,</p>
+                        <p class="text-sm font-semibold text-primary"><?php echo $_SESSION['name']; ?></p>
                     </div>
-
-                    <!-- Modal Body -->
-                    <form method="POST" class="p-6 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Treatment</label>
-                                <select name="treatment" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <option value="">-- Pilih Treatment --</option>
-                                    <?php
-                                    $t = $pdo->query("SELECT * FROM treatments");
-                                    while($r = $t->fetch()){ 
-                                        echo "<option value='{$r['id']}'>{$r['name']} - Rp ".number_format($r['price'], 0, ',', '.')."</option>"; 
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Terapis</label>
-                                <select name="therapist" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <option value="">-- Pilih Terapis --</option>
-                                    <?php
-                                    $th = $pdo->query("SELECT * FROM therapists");
-                                    while($r = $th->fetch()){ 
-                                        echo "<option value='{$r['id']}'>{$r['name']}</option>"; 
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
-                                <input type="date" name="date" min="<?php echo date('Y-m-d'); ?>" required 
-                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Jam (09:00 - 21:00)</label>
-                                <select name="time" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <option value="">-- Pilih Jam --</option>
-                                    <?php
-                                    for($i=9; $i<=21; $i++) {
-                                        $jam = str_pad($i, 2, '0', STR_PAD_LEFT).":00";
-                                        echo "<option value='$jam'>$jam</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Modal Footer -->
-                        <div class="flex gap-3 pt-4">
-                            <button type="button" id="cancelBtn" class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition">
-                                Batal
-                            </button>
-                            <button type="submit" name="booking" class="flex-1 px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition">
-                                📅 Booking Sekarang
-                            </button>
-                        </div>
-                    </form>
+                    <a href="../index.php" class="text-gray-600 hover:text-primary font-medium text-sm">Home</a>
+                    <a href="../treatments.php" class="text-gray-600 hover:text-primary font-medium text-sm">Treatment</a>
+                    <a href="member.php" class="text-gray-600 hover:text-primary font-medium text-sm">Dashboard</a>
+                    <a href="../logout.php" class="px-6 py-2.5 border border-primary text-primary text-center text-sm font-medium">Logout</a>
                 </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-12 lg:pb-16 bg-gradient-to-br from-primary via-gray-800 to-primary">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center text-white animate-fade-in-up">
+                <h1 class="text-4xl lg:text-5xl font-light tracking-tight mb-4">Member Dashboard</h1>
+                <p class="text-lg text-white/80 max-w-2xl mx-auto">
+                    Kelola booking dan pantau riwayat treatment Anda
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alert Message -->
+    <?php if($msg): 
+        list($type, $text) = explode('|', $msg);
+        $bgColor = $type == 'success' ? 'bg-green-50 border-green-500 text-green-700' : 'bg-red-50 border-red-500 text-red-700';
+        $icon = $type == 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    ?>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 -mt-8 relative z-10">
+        <div class="alert-animate <?php echo $bgColor; ?> border-l-4 p-4 rounded-lg shadow-lg">
+            <div class="flex items-center">
+                <i class="fas <?php echo $icon; ?> mr-3 text-xl"></i>
+                <p class="font-medium"><?php echo $text; ?></p>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Stats Cards -->
+    <section class="py-8 lg:py-12 <?php echo $msg ? '' : '-mt-16'; ?> relative z-10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Total Bookings -->
+                <div class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-calendar-alt text-2xl text-blue-600"></i>
+                        </div>
+                        <span class="text-3xl font-bold text-blue-600"><?php echo $totalBookings; ?></span>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Booking</h3>
+                    <p class="text-xs text-gray-500 mt-1">Keseluruhan booking</p>
+                </div>
+
+                <!-- Completed -->
+                <div class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                        </div>
+                        <span class="text-3xl font-bold text-green-600"><?php echo $completedBookings; ?></span>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Selesai</h3>
+                    <p class="text-xs text-gray-500 mt-1">Treatment completed</p>
+                </div>
+
+                <!-- Pending -->
+                <div class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-hourglass-half text-2xl text-orange-600"></i>
+                        </div>
+                        <span class="text-3xl font-bold text-orange-600"><?php echo $pendingBookings; ?></span>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Menunggu</h3>
+                    <p class="text-xs text-gray-500 mt-1">Pending confirmation</p>
+                </div>
+
+                <!-- Total Spent -->
+                <div class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-accent">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-wallet text-2xl text-accent"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Total Belanja</h3>
+                    <p class="text-2xl font-bold text-accent">Rp <?php echo number_format($totalSpent, 0, ',', '.'); ?></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-8 lg:py-12">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <!-- Action Button -->
+            <div class="mb-8">
+                <button id="openModalBtn" class="inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white hover:bg-black transition-all text-sm font-medium shadow-lg hover:shadow-xl">
+                    <i class="fas fa-plus-circle"></i>
+                    Buat Booking Baru
+                </button>
             </div>
 
             <!-- Booking History -->
-            <div class="bg-white rounded-xl shadow-md p-5 md:p-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Riwayat & Pembayaran</h2>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="px-6 py-5 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-primary">Riwayat Booking & Pembayaran</h2>
+                    <p class="text-sm text-gray-600 mt-1">Pantau semua booking dan status pembayaran Anda</p>
+                </div>
+
                 <div class="overflow-x-auto">
                     <table class="w-full">
-                        <thead>
-                            <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Treatment</th>
-                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Jadwal</th>
-                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Status Booking</th>
-                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Status Bayar</th>
-                                <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">Aksi</th>
+                        <thead class="bg-secondary">
+                            <tr>
+                                <th class="text-left py-4 px-6 text-sm font-semibold text-gray-700 uppercase tracking-wide">Treatment</th>
+                                <th class="text-left py-4 px-6 text-sm font-semibold text-gray-700 uppercase tracking-wide">Jadwal</th>
+                                <th class="text-left py-4 px-6 text-sm font-semibold text-gray-700 uppercase tracking-wide">Status Booking</th>
+                                <th class="text-left py-4 px-6 text-sm font-semibold text-gray-700 uppercase tracking-wide">Status Bayar</th>
+                                <th class="text-left py-4 px-6 text-sm font-semibold text-gray-700 uppercase tracking-wide">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-gray-100">
                             <?php
                             $hist = $pdo->prepare("SELECT b.*, t.name as tname, t.price, 
                                                    tr.payment_status, tr.proof_image, s.id as survey_id 
@@ -286,83 +330,229 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                             if($hist->rowCount() > 0) {
                                 while($h = $hist->fetch()) {
                                     // Badge Status Booking
-                                    $statusColors = [
-                                        'pending' => 'bg-yellow-100 text-yellow-800',
-                                        'confirmed' => 'bg-green-100 text-green-800',
-                                        'cancelled' => 'bg-red-100 text-red-800',
-                                        'completed' => 'bg-blue-100 text-blue-800'
+                                    $statusConfig = [
+                                        'pending' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'icon' => 'fa-clock', 'label' => 'Pending'],
+                                        'confirmed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'icon' => 'fa-check', 'label' => 'Confirmed'],
+                                        'cancelled' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'icon' => 'fa-times', 'label' => 'Cancelled'],
+                                        'completed' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'icon' => 'fa-check-double', 'label' => 'Completed']
                                     ];
-                                    $badgeClass = $statusColors[$h['status']] ?? 'bg-gray-100 text-gray-800';
+                                    $status = $statusConfig[$h['status']] ?? $statusConfig['pending'];
                                     
-                                    echo "<tr class='border-b border-gray-100 hover:bg-gray-50'>
-                                        <td class='py-3 px-4'>
-                                            <p class='font-medium text-gray-800'>{$h['tname']}</p>
-                                            <p class='text-sm font-semibold text-purple-600'>Rp ".number_format($h['price'], 0, ',', '.')."</p>
+                                    echo "<tr class='table-row'>
+                                        <td class='py-4 px-6'>
+                                            <p class='font-semibold text-gray-800'>{$h['tname']}</p>
+                                            <p class='text-sm font-bold text-accent mt-1'>Rp ".number_format($h['price'], 0, ',', '.')."</p>
                                         </td>
-                                        <td class='py-3 px-4'>
-                                            <p class='text-sm text-gray-800'>".date('d M Y', strtotime($h['booking_date']))."</p>
-                                            <p class='text-sm text-gray-600'>{$h['booking_time']}</p>
+                                        <td class='py-4 px-6'>
+                                            <div class='flex items-center gap-2 text-gray-700'>
+                                                <i class='fas fa-calendar text-accent text-sm'></i>
+                                                <span class='text-sm font-medium'>".date('d M Y', strtotime($h['booking_date']))."</span>
+                                            </div>
+                                            <div class='flex items-center gap-2 text-gray-600 mt-1'>
+                                                <i class='fas fa-clock text-accent text-xs'></i>
+                                                <span class='text-sm'>{$h['booking_time']}</span>
+                                            </div>
                                         </td>
-                                        <td class='py-3 px-4'>
-                                            <span class='px-2 py-1 text-xs font-semibold rounded-full $badgeClass'>".ucfirst($h['status'])."</span>
+                                        <td class='py-4 px-6'>
+                                            <span class='inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-full {$status['bg']} {$status['text']}'>
+                                                <i class='fas {$status['icon']}'></i>
+                                                {$status['label']}
+                                            </span>
                                         </td>
-                                        <td class='py-3 px-4'>";
+                                        <td class='py-4 px-6'>";
                                         
-                                        // LOGIKA STATUS PEMBAYARAN
+                                        // Status Pembayaran
                                         if($h['is_paid'] == 1) {
-                                            echo "<span class='text-green-600 font-semibold text-sm'>✔ Lunas</span>";
+                                            echo "<span class='inline-flex items-center gap-2 text-green-600 font-semibold text-sm'>
+                                                    <i class='fas fa-check-circle'></i> Lunas
+                                                  </span>";
                                         } elseif ($h['payment_status'] == 'pending') {
-                                            echo "<span class='text-orange-600 font-semibold text-sm'>⏳ Menunggu Konfirmasi</span>";
+                                            echo "<span class='inline-flex items-center gap-2 text-orange-600 font-semibold text-sm'>
+                                                    <i class='fas fa-hourglass-half'></i> Menunggu Konfirmasi
+                                                  </span>";
                                         } else {
-                                            echo "<span class='text-red-600 font-semibold text-sm'>Belum Bayar</span>";
+                                            echo "<span class='inline-flex items-center gap-2 text-red-600 font-semibold text-sm'>
+                                                    <i class='fas fa-times-circle'></i> Belum Bayar
+                                                  </span>";
                                         }
                                 
                                 echo "</td>
-                                        <td class='py-3 px-4'>
+                                        <td class='py-4 px-6'>
                                             <div class='flex flex-col gap-2'>";
                                             
-                                            // TOMBOL AKSI
+                                            // Tombol Aksi
                                             if($h['status'] == 'confirmed' && $h['is_paid'] == 0) {
                                                 if($h['payment_status'] == 'pending') {
-                                                    echo "<span class='text-xs text-gray-500'>Sedang dicek admin</span>";
+                                                    echo "<span class='text-xs text-gray-500 italic'>
+                                                            <i class='fas fa-info-circle'></i> Sedang dicek admin
+                                                          </span>";
                                                 } else {
-                                                    echo "<a href='payment.php?id={$h['id']}&amount={$h['price']}' class='inline-block px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 text-center'>Bayar Sekarang</a>";
+                                                    echo "<a href='payment.php?id={$h['id']}&amount={$h['price']}' 
+                                                            class='inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-all'>
+                                                            <i class='fas fa-credit-card'></i> Bayar Sekarang
+                                                          </a>";
                                                 }
                                             }
                                             
                                             // Tombol Survei
                                             if(($h['status'] == 'completed' || $h['is_paid'] == 1) && !$h['survey_id']) {
-                                                echo "<a href='survey.php?id={$h['id']}' class='inline-block px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded hover:bg-purple-700 text-center'>Isi Survei</a>";
+                                                echo "<a href='survey.php?id={$h['id']}' 
+                                                        class='inline-flex items-center justify-center gap-2 px-4 py-2 bg-accent text-white text-xs font-semibold rounded-lg hover:bg-accent/90 transition-all'>
+                                                        <i class='fas fa-star'></i> Isi Survei
+                                                      </a>";
                                             }
                                     echo "</div>
                                         </td>
                                     </tr>";
                                 }
                             } else {
-                                echo "<tr><td colspan='5' class='text-center py-8 text-gray-400'>Belum ada riwayat booking</td></tr>";
+                                echo "<tr>
+                                        <td colspan='5' class='text-center py-12'>
+                                            <i class='fas fa-inbox text-5xl text-gray-300 mb-4'></i>
+                                            <p class='text-gray-500 font-medium'>Belum ada riwayat booking</p>
+                                            <p class='text-sm text-gray-400 mt-2'>Mulai booking treatment pertama Anda sekarang</p>
+                                        </td>
+                                      </tr>";
                             }
                             ?>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </main>
+        </div>
+    </section>
+
+    <!-- Modal Booking -->
+    <div id="bookingModal" class="hidden fixed inset-0 bg-black/60 modal-backdrop z-50 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-primary to-gray-800 px-6 py-5 rounded-t-2xl flex items-center justify-between sticky top-0 z-10">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-calendar-plus text-2xl text-accent"></i>
+                    <h2 class="text-xl font-semibold text-white">Buat Booking Baru</h2>
+                </div>
+                <button id="closeModalBtn" class="text-white hover:text-accent transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <form method="POST" class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Treatment -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-spa text-accent mr-2"></i>Pilih Treatment
+                        </label>
+                        <select name="treatment" required 
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-accent focus:outline-none transition-colors">
+                            <option value="">-- Pilih Treatment --</option>
+                            <?php
+                            $t = $pdo->query("SELECT * FROM treatments ORDER BY name");
+                            while($r = $t->fetch()){ 
+                                echo "<option value='{$r['id']}'>{$r['name']} - Rp ".number_format($r['price'], 0, ',', '.')."</option>"; 
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <!-- Therapist -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-user-nurse text-accent mr-2"></i>Pilih Terapis
+                        </label>
+                        <select name="therapist" required 
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-accent focus:outline-none transition-colors">
+                            <option value="">-- Pilih Terapis --</option>
+                            <?php
+                            $th = $pdo->query("SELECT * FROM therapists ORDER BY name");
+                            while($r = $th->fetch()){ 
+                                echo "<option value='{$r['id']}'>{$r['name']}</option>"; 
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Date -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-calendar-day text-accent mr-2"></i>Tanggal
+                        </label>
+                        <input type="date" name="date" min="<?php echo date('Y-m-d'); ?>" required 
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-accent focus:outline-none transition-colors">
+                    </div>
+
+                    <!-- Time -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-clock text-accent mr-2"></i>Jam (09:00 - 21:00)
+                        </label>
+                        <select name="time" required 
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-accent focus:outline-none transition-colors">
+                            <option value="">-- Pilih Jam --</option>
+                            <?php
+                            for($i=9; $i<=21; $i++) {
+                                $jam = str_pad($i, 2, '0', STR_PAD_LEFT).":00";
+                                echo "<option value='$jam'>$jam</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-semibold mb-1">Catatan Penting:</p>
+                            <ul class="list-disc list-inside space-y-1 text-xs">
+                                <li>Pastikan memilih jadwal yang sesuai dengan ketersediaan Anda</li>
+                                <li>Booking akan dikonfirmasi oleh admin dalam 1x24 jam</li>
+                                <li>Pembayaran dapat dilakukan setelah booking dikonfirmasi</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex gap-3 pt-4 border-t border-gray-200">
+                    <button type="button" id="cancelBtn" 
+                            class="flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button type="submit" name="booking" 
+                            class="flex-1 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-black transition-all shadow-lg">
+                        <i class="fas fa-calendar-check mr-2"></i>Booking Sekarang
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
+    <!-- Footer -->
+    <footer class="bg-primary text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-spa text-xl text-accent"></i>
+                    <span class="text-lg font-semibold tracking-tight">Beautybar.bync</span>
+                </div>
+                
+                <p class="text-white/50 text-sm text-center md:text-left">
+                    &copy; 2013-<?= date('Y') ?>, All rights Reserved. Bandar Lampung - Indonesia
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
     <script>
         // Mobile Menu Toggle
-        const menuBtn = document.getElementById('menuBtn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('hidden');
-        });
-
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            overlay.classList.add('hidden');
+        document.querySelector('.mobile-toggle').addEventListener('click', function() {
+            document.querySelector('.mobile-menu').classList.toggle('hidden');
         });
 
         // Modal Toggle
@@ -373,22 +563,42 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
 
         openModalBtn.addEventListener('click', () => {
             bookingModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         });
 
-        closeModalBtn.addEventListener('click', () => {
+        function closeModal() {
             bookingModal.classList.add('hidden');
-        });
+            document.body.style.overflow = 'auto';
+        }
 
-        cancelBtn.addEventListener('click', () => {
-            bookingModal.classList.add('hidden');
-        });
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
 
         // Close modal when clicking outside
         bookingModal.addEventListener('click', (e) => {
             if (e.target === bookingModal) {
-                bookingModal.classList.add('hidden');
+                closeModal();
             }
         });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !bookingModal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // Auto-hide alert after 5 seconds
+        const alert = document.querySelector('.alert-animate');
+        if (alert) {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                alert.style.transition = 'all 0.3s ease-out';
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
     </script>
+
 </body>
 </html>

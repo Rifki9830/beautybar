@@ -413,13 +413,6 @@ if ($selected_category > 0) {
                             <?= htmlspecialchars($treatment['category_name']) ?>
                         </div>
                         <?php endif; ?>
-
-                        <!-- Quick View Button -->
-                        <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                            <button class="bg-white text-primary px-4 py-2 rounded-full text-sm font-semibold shadow-xl hover:bg-accent hover:text-white transition-colors">
-                                <i class="fas fa-eye mr-1"></i> Lihat Detail
-                            </button>
-                        </div>
                     </div>
 
                     <div class="treatment-content p-5">
@@ -450,7 +443,7 @@ if ($selected_category > 0) {
                         <div class="treatment-actions">
                             <a href="login.php" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-black transition-all text-xs font-semibold shadow-md hover:shadow-xl group">
                                 <i class="fas fa-calendar-check"></i> 
-                                Book Now
+                                Booking Sekarang
                             </a>
                         </div>
                     </div>
@@ -479,18 +472,6 @@ if ($selected_category > 0) {
                 </a>
             </div>
             <?php endif; ?>
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="py-20 lg:py-32 bg-primary text-white">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
-            <h2 class="text-4xl lg:text-5xl font-light tracking-tight mb-6">Siap untuk Tampil Cantik?</h2>
-            <p class="text-lg mb-10 opacity-90 max-w-2xl mx-auto">Booking treatment sekarang dan dapatkan penawaran spesial untuk kunjungan pertama Anda</p>
-            <a href="login.php" class="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-primary hover:bg-gray-100 transition-all font-medium text-sm rounded-lg shadow-xl">
-                <i class="fas fa-calendar-check"></i>
-                Booking Sekarang
-            </a>
         </div>
     </section>
 
