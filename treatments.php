@@ -480,10 +480,6 @@ if ($selected_category > 0) {
                             <a href="login.php" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-black transition-all text-xs font-semibold shadow-md hover:shadow-xl group">
                                 <i class="fas fa-calendar-check"></i> 
                                 Booking Sekarang
-                            <a href="login.php"
-                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-black transition-all text-xs font-semibold shadow-md hover:shadow-xl group">
-                                <i class="fas fa-calendar-check"></i>
-                                Book Now
                             </a>
                         </div>
                     </div>
