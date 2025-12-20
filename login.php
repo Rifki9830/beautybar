@@ -27,6 +27,7 @@ if (isset($_POST['login'])) {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,50 +35,53 @@ if (isset($_POST['login'])) {
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1a1a1a',
-                        secondary: '#f5f5f5',
-                        accent: '#d4a574',
-                    },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-                    },
-                }
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#1a1a1a',
+                    secondary: '#f5f5f5',
+                    accent: '#d4a574',
+                },
+                fontFamily: {
+                    sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                },
             }
         }
+    }
     </script>
     <style>
-        html { scroll-behavior: smooth; }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
+    html {
+        scroll-behavior: smooth;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
         }
 
-        .input-group {
-            position: relative;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
 
-        .input-group input:focus + .input-icon {
-            color: #d4a574;
-        }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
 
-        .input-group input:focus {
-            border-color: #d4a574;
-        }
+    .input-group {
+        position: relative;
+    }
+
+    .input-group input:focus+.input-icon {
+        color: #d4a574;
+    }
+
+    .input-group input:focus {
+        border-color: #d4a574;
+    }
     </style>
 </head>
 
@@ -95,8 +99,10 @@ if (isset($_POST['login'])) {
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="index.php" class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Home</a>
-                    <a href="treatments.php" class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Treatment</a>
+                    <a href="index.php"
+                        class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Home</a>
+                    <a href="treatments.php"
+                        class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Treatment</a>
                 </div>
             </div>
         </div>
@@ -105,12 +111,14 @@ if (isset($_POST['login'])) {
     <!-- Login Section -->
     <section class="min-h-screen flex items-center justify-center py-20 px-4">
         <div class="w-full max-w-6xl grid md:grid-cols-2 gap-0 bg-white shadow-2xl overflow-hidden">
-            
+
             <!-- Left Side - Image & Info -->
             <div class="hidden md:block relative bg-gradient-to-br from-primary to-gray-800 p-12 text-white">
                 <!-- Background Pattern -->
                 <div class="absolute inset-0 opacity-10">
-                    <div class="absolute inset-0" style="background-image: url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center;"></div>
+                    <div class="absolute inset-0"
+                        style="background-image: url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center;">
+                    </div>
                 </div>
 
                 <div class="relative z-10 h-full flex flex-col justify-between">
@@ -134,7 +142,8 @@ if (isset($_POST['login'])) {
                         <!-- Features -->
                         <div class="space-y-4">
                             <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
                                     <i class="fas fa-calendar-check text-accent"></i>
                                 </div>
                                 <div>
@@ -144,7 +153,8 @@ if (isset($_POST['login'])) {
                             </div>
 
                             <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
                                     <i class="fas fa-history text-accent"></i>
                                 </div>
                                 <div>
@@ -154,7 +164,8 @@ if (isset($_POST['login'])) {
                             </div>
 
                             <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
                                     <i class="fas fa-star text-accent"></i>
                                 </div>
                                 <div>
@@ -210,12 +221,10 @@ if (isset($_POST['login'])) {
                                 Alamat Email
                             </label>
                             <div class="relative">
-                                <input type="email" 
-                                       name="email" 
-                                       required 
-                                       placeholder="contoh@email.com"
-                                       class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
-                                <i class="input-icon fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
+                                <input type="email" name="email" required placeholder="contoh@email.com"
+                                    class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
+                                <i
+                                    class="input-icon fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
                             </div>
                         </div>
 
@@ -225,19 +234,18 @@ if (isset($_POST['login'])) {
                                 Password
                             </label>
                             <div class="relative">
-                                <input type="password" 
-                                       name="password" 
-                                       required 
-                                       placeholder="Masukkan password Anda"
-                                       class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
-                                <i class="input-icon fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
+                                <input type="password" name="password" required placeholder="Masukkan password Anda"
+                                    class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
+                                <i
+                                    class="input-icon fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
                             </div>
                         </div>
 
                         <!-- Remember & Forgot -->
                         <div class="flex items-center justify-between text-sm">
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-accent focus:ring-accent focus:ring-offset-0">
+                                <input type="checkbox"
+                                    class="w-4 h-4 rounded border-gray-300 text-accent focus:ring-accent focus:ring-offset-0">
                                 <span class="text-gray-600">Ingat saya</span>
                             </label>
                             <a href="#" class="text-accent hover:text-accent/80 font-medium transition-colors">
@@ -246,9 +254,8 @@ if (isset($_POST['login'])) {
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" 
-                                name="login" 
-                                class="w-full py-3.5 bg-primary text-white font-semibold rounded-lg hover:bg-black transition-all shadow-lg hover:shadow-xl text-sm">
+                        <button type="submit" name="login"
+                            class="w-full py-3.5 bg-primary text-white font-semibold rounded-lg hover:bg-black transition-all shadow-lg hover:shadow-xl text-sm">
                             <i class="fas fa-sign-in-alt mr-2"></i>
                             Masuk
                         </button>
@@ -267,12 +274,14 @@ if (isset($_POST['login'])) {
                         <div class="text-center space-y-4">
                             <p class="text-sm text-gray-600">
                                 Belum punya akun?
-                                <a href="register.php" class="text-accent font-semibold hover:text-accent/80 transition-colors ml-1">
+                                <a href="register.php"
+                                    class="text-accent font-semibold hover:text-accent/80 transition-colors ml-1">
                                     Daftar Sekarang
                                 </a>
                             </p>
-                            
-                            <a href="index.php" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors">
+
+                            <a href="index.php"
+                                class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors">
                                 <i class="fas fa-arrow-left"></i>
                                 Kembali ke Beranda
                             </a>
@@ -282,9 +291,9 @@ if (isset($_POST['login'])) {
                     <!-- Footer Note -->
                     <div class="mt-8 pt-6 border-t border-gray-200">
                         <p class="text-xs text-center text-gray-500">
-                            Dengan login, Anda menyetujui 
-                            <a href="#" class="text-accent hover:underline">Syarat & Ketentuan</a> 
-                            dan 
+                            Dengan login, Anda menyetujui
+                            <a href="#" class="text-accent hover:underline">Syarat & Ketentuan</a>
+                            dan
                             <a href="#" class="text-accent hover:underline">Kebijakan Privasi</a> kami
                         </p>
                     </div>
@@ -302,7 +311,7 @@ if (isset($_POST['login'])) {
                     <i class="fas fa-spa text-xl text-accent"></i>
                     <span class="text-lg font-semibold tracking-tight">Beautybar.bync</span>
                 </div>
-                
+
                 <p class="text-white/50 text-sm text-center md:text-left">
                     &copy; 2013-<?= date('Y') ?>, All rights Reserved. Bandar Lampung - Indonesia
                 </p>
@@ -311,4 +320,5 @@ if (isset($_POST['login'])) {
     </footer>
 
 </body>
+
 </html>

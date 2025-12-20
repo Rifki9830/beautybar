@@ -18,6 +18,7 @@ if (isset($_POST['register'])) {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,50 +26,53 @@ if (isset($_POST['register'])) {
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1a1a1a',
-                        secondary: '#f5f5f5',
-                        accent: '#d4a574',
-                    },
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-                    },
-                }
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#1a1a1a',
+                    secondary: '#f5f5f5',
+                    accent: '#d4a574',
+                },
+                fontFamily: {
+                    sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                },
             }
         }
+    }
     </script>
     <style>
-        html { scroll-behavior: smooth; }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
+    html {
+        scroll-behavior: smooth;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
         }
 
-        .input-group {
-            position: relative;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
 
-        .input-group input:focus + .input-icon {
-            color: #d4a574;
-        }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
 
-        .input-group input:focus {
-            border-color: #d4a574;
-        }
+    .input-group {
+        position: relative;
+    }
+
+    .input-group input:focus+.input-icon {
+        color: #d4a574;
+    }
+
+    .input-group input:focus {
+        border-color: #d4a574;
+    }
     </style>
 </head>
 
@@ -86,8 +90,10 @@ if (isset($_POST['register'])) {
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="index.php" class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Home</a>
-                    <a href="treatments.php" class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Treatment</a>
+                    <a href="index.php"
+                        class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Home</a>
+                    <a href="treatments.php"
+                        class="text-gray-600 hover:text-primary font-medium text-sm transition-colors">Treatment</a>
                 </div>
             </div>
         </div>
@@ -96,12 +102,14 @@ if (isset($_POST['register'])) {
     <!-- Register Section -->
     <section class="min-h-screen flex items-center justify-center py-20 px-4">
         <div class="w-full max-w-6xl grid md:grid-cols-2 gap-0 bg-white shadow-2xl overflow-hidden">
-            
+
             <!-- Left Side - Image & Info -->
             <div class="hidden md:block relative bg-gradient-to-br from-primary to-gray-800 p-12 text-white">
                 <!-- Background Pattern -->
                 <div class="absolute inset-0 opacity-10">
-                    <div class="absolute inset-0" style="background-image: url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center;"></div>
+                    <div class="absolute inset-0"
+                        style="background-image: url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center;">
+                    </div>
                 </div>
 
                 <div class="relative z-10 h-full flex flex-col justify-between">
@@ -125,7 +133,8 @@ if (isset($_POST['register'])) {
                         <!-- Features -->
                         <div class="space-y-4">
                             <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
                                     <i class="fas fa-gift text-accent"></i>
                                 </div>
                                 <div>
@@ -135,7 +144,8 @@ if (isset($_POST['register'])) {
                             </div>
 
                             <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
                                     <i class="fas fa-percent text-accent"></i>
                                 </div>
                                 <div>
@@ -145,7 +155,8 @@ if (isset($_POST['register'])) {
                             </div>
 
                             <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-1">
                                     <i class="fas fa-crown text-accent"></i>
                                 </div>
                                 <div>
@@ -201,12 +212,10 @@ if (isset($_POST['register'])) {
                                 Nama Lengkap
                             </label>
                             <div class="relative">
-                                <input type="text" 
-                                       name="name" 
-                                       required 
-                                       placeholder="Masukkan nama lengkap Anda"
-                                       class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
-                                <i class="input-icon fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
+                                <input type="text" name="name" required placeholder="Masukkan nama lengkap Anda"
+                                    class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
+                                <i
+                                    class="input-icon fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
                             </div>
                         </div>
 
@@ -216,12 +225,10 @@ if (isset($_POST['register'])) {
                                 Alamat Email
                             </label>
                             <div class="relative">
-                                <input type="email" 
-                                       name="email" 
-                                       required 
-                                       placeholder="contoh@email.com"
-                                       class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
-                                <i class="input-icon fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
+                                <input type="email" name="email" required placeholder="contoh@email.com"
+                                    class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
+                                <i
+                                    class="input-icon fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
                             </div>
                         </div>
 
@@ -231,33 +238,29 @@ if (isset($_POST['register'])) {
                                 Password
                             </label>
                             <div class="relative">
-                                <input type="password" 
-                                       name="password" 
-                                       required 
-                                       placeholder="Masukkan password Anda"
-                                       class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
-                                <i class="input-icon fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
+                                <input type="password" name="password" required placeholder="Masukkan password Anda"
+                                    class="w-full px-4 py-3.5 pl-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-0 transition-colors text-sm">
+                                <i
+                                    class="input-icon fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors"></i>
                             </div>
                             <p class="text-xs text-gray-500 mt-2">Minimal 6 karakter</p>
                         </div>
 
                         <!-- Terms & Conditions -->
                         <div class="flex items-start gap-2">
-                            <input type="checkbox" 
-                                   required 
-                                   class="w-4 h-4 mt-0.5 rounded border-gray-300 text-accent focus:ring-accent focus:ring-offset-0">
+                            <input type="checkbox" required
+                                class="w-4 h-4 mt-0.5 rounded border-gray-300 text-accent focus:ring-accent focus:ring-offset-0">
                             <label class="text-sm text-gray-600">
-                                Saya menyetujui 
-                                <a href="#" class="text-accent hover:text-accent/80 font-medium">Syarat & Ketentuan</a> 
-                                dan 
+                                Saya menyetujui
+                                <a href="#" class="text-accent hover:text-accent/80 font-medium">Syarat & Ketentuan</a>
+                                dan
                                 <a href="#" class="text-accent hover:text-accent/80 font-medium">Kebijakan Privasi</a>
                             </label>
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" 
-                                name="register" 
-                                class="w-full py-3.5 bg-primary text-white font-semibold rounded-lg hover:bg-black transition-all shadow-lg hover:shadow-xl text-sm">
+                        <button type="submit" name="register"
+                            class="w-full py-3.5 bg-primary text-white font-semibold rounded-lg hover:bg-black transition-all shadow-lg hover:shadow-xl text-sm">
                             <i class="fas fa-user-plus mr-2"></i>
                             Daftar Sekarang
                         </button>
@@ -276,12 +279,14 @@ if (isset($_POST['register'])) {
                         <div class="text-center space-y-4">
                             <p class="text-sm text-gray-600">
                                 Sudah punya akun?
-                                <a href="login.php" class="text-accent font-semibold hover:text-accent/80 transition-colors ml-1">
+                                <a href="login.php"
+                                    class="text-accent font-semibold hover:text-accent/80 transition-colors ml-1">
                                     Login Sekarang
                                 </a>
                             </p>
-                            
-                            <a href="index.php" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors">
+
+                            <a href="index.php"
+                                class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors">
                                 <i class="fas fa-arrow-left"></i>
                                 Kembali ke Beranda
                             </a>
@@ -319,7 +324,7 @@ if (isset($_POST['register'])) {
                     <i class="fas fa-spa text-xl text-accent"></i>
                     <span class="text-lg font-semibold tracking-tight">Beautybar.bync</span>
                 </div>
-                
+
                 <p class="text-white/50 text-sm text-center md:text-left">
                     &copy; 2013-<?= date('Y') ?>, All rights Reserved. Bandar Lampung - Indonesia
                 </p>
@@ -328,4 +333,5 @@ if (isset($_POST['register'])) {
     </footer>
 
 </body>
+
 </html>
