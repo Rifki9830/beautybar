@@ -623,7 +623,7 @@ if (!isset($pdo)) {
             <!-- Contact CTA -->
             <div class="mt-12 text-center p-8 bg-secondary rounded-2xl">
                 <p class="text-gray-600 mb-4">Masih ada pertanyaan lain?</p>
-                <a href="https://wa.me/895609706131"
+                <a href="https://wa.me/+6288268195618"
                     class="inline-flex items-center gap-2 px-8 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 transition-all font-medium">
                     <i class="fab fa-whatsapp"></i>
                     <span>Hubungi Kami</span>
@@ -642,7 +642,7 @@ if (!isset($pdo)) {
                 </div>
 
                 <p class="text-white/50 text-sm text-center md:text-left">
-                    &copy; 2013-<?= date('Y') ?>, All rights Reserved. Bandar Lampung - Indonesia
+                    &copy; Beautybar <?= date('Y') ?>, All rights Reserved. Bandar Lampung - Indonesia
                 </p>
             </div>
         </div>
