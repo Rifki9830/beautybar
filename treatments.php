@@ -386,35 +386,82 @@ if ($selected_category > 0) {
     <!-- Category Pills - Horizontal Scroll -->
     <section class="bg-white py-4 md:py-6 sticky top-16 md:top-20 z-40 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <!-- Mobile Version -->
+            <!-- Mobile Version - Dropdown -->
             <div class="md:hidden">
-                <!-- Horizontal Scroll Categories -->
-                <div class="overflow-x-auto scrollbar-hide -mx-4 px-4">
-                    <div class="flex gap-2 pb-2">
-                        <a href="treatments.php"
-                            class="category-pill inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all <?= $selected_category == 0 ? 'bg-primary text-white shadow-lg' : 'bg-gray-100 text-gray-700 active:bg-gray-200' ?>"
-                            data-category="0">
-                            <i class="fas fa-th-large text-xs"></i>
-                            <span>Semua</span>
-                            <span
-                                class="inline-flex items-center justify-center min-w-[24px] px-1.5 py-0.5 rounded-full text-xs font-semibold <?= $selected_category == 0 ? 'bg-white/20 text-white' : 'bg-white text-gray-700' ?>">
-                                <?= count($pdo->query("SELECT * FROM treatments")->fetchAll()) ?>
+                <div class="relative">
+                    <!-- Dropdown Button -->
+                    <button type="button" id="categoryDropdown"
+                        class="w-full flex items-center justify-between gap-3 px-4 py-3 bg-gray-100 rounded-xl text-sm font-medium text-gray-700 transition-all active:bg-gray-200">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-th-large text-primary"></i>
+                            <span id="selectedCategoryName">
+                                <?php 
+                                if ($selected_category == 0) {
+                                    echo 'Semua Treatment';
+                                } else {
+                                    foreach ($categories as $cat) {
+                                        if ($cat['id'] == $selected_category) {
+                                            echo htmlspecialchars($cat['name']);
+                                            break;
+                                        }
+                                    }
+                                }
+                                ?>
                             </span>
-                        </a>
+                            <span class="inline-flex items-center justify-center min-w-[24px] px-1.5 py-0.5 rounded-full text-xs font-semibold bg-white text-gray-700">
+                                <?php 
+                                if ($selected_category == 0) {
+                                    echo count($pdo->query("SELECT * FROM treatments")->fetchAll());
+                                } else {
+                                    foreach ($categories as $cat) {
+                                        if ($cat['id'] == $selected_category) {
+                                            echo $cat['treatment_count'];
+                                            break;
+                                        }
+                                    }
+                                }
+                                ?>
+                            </span>
+                        </div>
+                        <i class="fas fa-chevron-down transition-transform duration-200" id="dropdownIcon"></i>
+                    </button>
 
-                        <?php foreach ($categories as $cat): ?>
-                            <?php if ($cat['treatment_count'] > 0): ?>
-                                <a href="treatments.php?category=<?= $cat['id'] ?>"
-                                    class="category-pill inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all <?= $selected_category == $cat['id'] ? 'bg-primary text-white shadow-lg' : 'bg-gray-100 text-gray-700 active:bg-gray-200' ?>"
-                                    data-category="<?= $cat['id'] ?>">
-                                    <span><?= htmlspecialchars($cat['name']) ?></span>
-                                    <span
-                                        class="inline-flex items-center justify-center min-w-[24px] px-1.5 py-0.5 rounded-full text-xs font-semibold <?= $selected_category == $cat['id'] ? 'bg-white/20 text-white' : 'bg-white text-gray-700' ?>">
-                                        <?= $cat['treatment_count'] ?>
-                                    </span>
-                                </a>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                    <!-- Dropdown Menu -->
+                    <div id="categoryDropdownMenu"
+                        class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50 hidden">
+                        <div class="max-h-[400px] overflow-y-auto">
+                            <!-- All Categories -->
+                            <a href="treatments.php"
+                                class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 active:bg-gray-100 transition-colors <?= $selected_category == 0 ? 'bg-primary/5' : '' ?>"
+                                data-category="0">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-th-large text-primary <?= $selected_category == 0 ? 'text-primary' : 'text-gray-400' ?>"></i>
+                                    <span class="font-medium <?= $selected_category == 0 ? 'text-primary' : 'text-gray-700' ?>">Semua Treatment</span>
+                                </div>
+                                <span
+                                    class="inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-full text-xs font-semibold <?= $selected_category == 0 ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600' ?>">
+                                    <?= count($pdo->query("SELECT * FROM treatments")->fetchAll()) ?>
+                                </span>
+                            </a>
+
+                            <!-- Category List -->
+                            <?php foreach ($categories as $cat): ?>
+                                <?php if ($cat['treatment_count'] > 0): ?>
+                                    <a href="treatments.php?category=<?= $cat['id'] ?>"
+                                        class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 active:bg-gray-100 transition-colors <?= $selected_category == $cat['id'] ? 'bg-primary/5' : '' ?>"
+                                        data-category="<?= $cat['id'] ?>">
+                                        <div class="flex items-center gap-3">
+                                            <i class="fas fa-circle text-xs <?= $selected_category == $cat['id'] ? 'text-primary' : 'text-gray-300' ?>"></i>
+                                            <span class="font-medium <?= $selected_category == $cat['id'] ? 'text-primary' : 'text-gray-700' ?>"><?= htmlspecialchars($cat['name']) ?></span>
+                                        </div>
+                                        <span
+                                            class="inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-full text-xs font-semibold <?= $selected_category == $cat['id'] ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600' ?>">
+                                            <?= $cat['treatment_count'] ?>
+                                        </span>
+                                    </a>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -727,6 +774,34 @@ if ($selected_category > 0) {
                 const url = cat == 0 ? 'treatments.php' : `treatments.php?category=${cat}`;
                 window.history.pushState({}, '', url);
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownBtn = document.getElementById('categoryDropdown');
+            const dropdownMenu = document.getElementById('categoryDropdownMenu');
+            const dropdownIcon = document.getElementById('dropdownIcon');
+
+            if (dropdownBtn && dropdownMenu) {
+                // Toggle dropdown
+                dropdownBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('hidden');
+                    dropdownIcon.classList.toggle('rotate-180');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.add('hidden');
+                        dropdownIcon.classList.remove('rotate-180');
+                    }
+                });
+
+                // Prevent dropdown from closing when clicking inside menu
+                dropdownMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
         });
 
         // View Toggle (Grid/List)
