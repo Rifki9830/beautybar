@@ -435,18 +435,15 @@ if ($selected_category > 0) {
                             <?= htmlspecialchars($treatment['category_name']) ?>
                         </div>
                         <?php endif; ?>
-<<<<<<< HEAD
-=======
 
                         <!-- Quick View Button -->
-                        <div
+                        <!-- <div
                             class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                             <button
                                 class="bg-white text-primary px-4 py-2 rounded-full text-sm font-semibold shadow-xl hover:bg-accent hover:text-white transition-colors">
                                 <i class="fas fa-eye mr-1"></i> Lihat Detail
                             </button>
-                        </div>
->>>>>>> 01ffab3acc2e020e72f7a794aeb9b7332ca16afd
+                        </div> -->
                     </div>
 
                     <div class="treatment-content p-5">
