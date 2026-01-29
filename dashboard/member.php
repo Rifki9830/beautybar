@@ -446,7 +446,7 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                         </label>
                         <select name="treatment" required 
                                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-accent focus:outline-none transition-colors">
-                            <option value="">-- Pilih Treatment --</option>
+                            <option value=""> Pilih Treatment </option>
                             <?php
                             $t = $pdo->query("SELECT * FROM treatments ORDER BY name");
                             while($r = $t->fetch()){ 
@@ -463,7 +463,7 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                         </label>
                         <select name="therapist" required 
                                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-accent focus:outline-none transition-colors">
-                            <option value="">-- Pilih Terapis --</option>
+                            <option value=""> Pilih Terapis </option>
                             <?php
                             $th = $pdo->query("SELECT * FROM therapists ORDER BY name");
                             while($r = $th->fetch()){ 
@@ -491,7 +491,7 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                         </label>
                         <select name="time" required 
                                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-accent focus:outline-none transition-colors">
-                            <option value="">-- Pilih Jam --</option>
+                            <option value=""> Pilih Jam </option>
                             <?php
                             for($i=9; $i<=21; $i++) {
                                 $jam = str_pad($i, 2, '0', STR_PAD_LEFT).":00";

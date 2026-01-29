@@ -512,8 +512,6 @@ if ($selected_category > 0) {
         </div>
     </section>
 
-<<<<<<< HEAD
-=======
     <!-- CTA -->
     <section class="py-20 lg:py-32 bg-primary text-white">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
@@ -528,7 +526,6 @@ if ($selected_category > 0) {
         </div>
     </section>
 
->>>>>>> 01ffab3acc2e020e72f7a794aeb9b7332ca16afd
     <!-- Footer -->
     <footer class="bg-primary text-white py-8">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
