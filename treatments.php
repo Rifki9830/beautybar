@@ -337,7 +337,7 @@ if ($selected_category > 0) {
                 <div class="max-w-2xl mx-auto mb-8">
                     <div class="relative">
                         <input type="text" id="searchInput"
-                            placeholder="Cari treatment (contoh: facial, hair spa, massage...)"
+                            placeholder="Cari treatment....."
                             class="w-full px-6 py-4 pr-12 rounded-full bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-accent focus:outline-none text-gray-800 placeholder-gray-500 text-sm">
                         <i class="fas fa-search absolute right-6 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     </div>
