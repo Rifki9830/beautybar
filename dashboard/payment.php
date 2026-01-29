@@ -15,22 +15,22 @@ $amount = $_GET['amount'];
     <title>Pembayaran - Beautybar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-    .payment-box {
-        display: none;
-        animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
+        .payment-box {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-    }
     </style>
 </head>
 
@@ -75,9 +75,9 @@ $amount = $_GET['amount'];
                         <label class="block text-sm font-semibold text-gray-700 mb-3">Pilih Bank / E-Wallet</label>
                         <select name="method" id="paymentMethod" onchange="showPaymentDetails()" required
                             class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
-                            <option value="">-- Pilih Salah Satu --</option>
-                            <option value="BCA">🏦 Bank BCA (Transfer)</option>
-                            <option value="QRIS">📱 QRIS (Scan Barcode)</option>
+                            <option value=""> Pilih Pembayaran </option>
+                            <option value="BCA">Bank BCA (Transfer)</option>
+                            <option value="QRIS">QRIS (Scan Barcode)</option>
                         </select>
                     </div>
 
@@ -91,10 +91,10 @@ $amount = $_GET['amount'];
                                 <p class="text-2xl md:text-3xl font-bold text-gray-800 tracking-wider" id="text_BCA">
                                     0201993198</p>
                             </div>
-                            <p class="text-sm text-gray-600 mb-3">a.n Rifki Abdullah</p>
+                            <p class="text-sm text-gray-600 mb-3">NESYANDA CARENINA</p>
                             <button type="button" onclick="copyToClipboard('text_BCA')"
                                 class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
-                                📋 Salin Nomor
+                                Salin Nomor
                             </button>
                         </div>
                     </div>
@@ -104,10 +104,12 @@ $amount = $_GET['amount'];
                         <div class="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 text-center">
                             <p class="text-sm font-semibold text-gray-700 mb-4">Scan QRIS di bawah ini:</p>
                             <div class="bg-white rounded-lg p-4 inline-block mb-3">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png"
-                                    alt="QRIS" class="w-48 h-48 mx-auto">
+                                <img src="../assets/qris.svg" alt="QRIS BEAUTYBAR BYNC"
+                                    class="w-48 h-48 mx-auto object-contain">
                             </div>
-                            <p class="text-sm text-gray-600">NMID: ID10200300400</p>
+                            <p class="text-sm font-semibold text-gray-700 mb-1">BEAUTYBAR BYNC</p>
+                            <p class="text-sm text-gray-600">NMID: ID1025437124163</p>
+                            <p class="text-xs text-gray-500 mt-2">Kode: A01</p>
                         </div>
                     </div>
 
@@ -136,7 +138,7 @@ $amount = $_GET['amount'];
                         </a>
                         <button type="submit" name="upload"
                             class="flex-1 px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition shadow-lg">
-                            💳 Kirim Bukti Pembayaran
+                            Kirim Bukti Pembayaran
                         </button>
                     </div>
                 </form>
@@ -163,43 +165,43 @@ $amount = $_GET['amount'];
     </div>
 
     <script>
-    function showPaymentDetails() {
-        const selectedBank = document.getElementById("paymentMethod").value;
-        const allBoxes = document.getElementsByClassName("payment-box");
+        function showPaymentDetails() {
+            const selectedBank = document.getElementById("paymentMethod").value;
+            const allBoxes = document.getElementsByClassName("payment-box");
 
-        // Hide all payment boxes
-        for (let i = 0; i < allBoxes.length; i++) {
-            allBoxes[i].style.display = "none";
-        }
+            // Hide all payment boxes
+            for (let i = 0; i < allBoxes.length; i++) {
+                allBoxes[i].style.display = "none";
+            }
 
-        // Show selected payment box
-        if (selectedBank !== "") {
-            const targetId = "info_" + selectedBank;
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-                targetElement.style.display = "block";
+            // Show selected payment box
+            if (selectedBank !== "") {
+                const targetId = "info_" + selectedBank;
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.style.display = "block";
+                }
             }
         }
-    }
 
-    function copyToClipboard(elementId) {
-        const copyText = document.getElementById(elementId).innerText;
-        navigator.clipboard.writeText(copyText).then(function() {
-            // Show success message
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '✓ Tersalin!';
-            btn.classList.add('bg-green-600', 'hover:bg-green-700');
+        function copyToClipboard(elementId) {
+            const copyText = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(copyText).then(function () {
+                // Show success message
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✓ Tersalin!';
+                btn.classList.add('bg-green-600', 'hover:bg-green-700');
 
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.classList.remove('bg-green-600', 'hover:bg-green-700');
-            }, 2000);
-        }, function(err) {
-            console.error('Gagal menyalin: ', err);
-            alert('Gagal menyalin. Silakan salin manual.');
-        });
-    }
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                }, 2000);
+            }, function (err) {
+                console.error('Gagal menyalin: ', err);
+                alert('Gagal menyalin. Silakan salin manual.');
+            });
+        }
     </script>
 </body>
 
