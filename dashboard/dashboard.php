@@ -118,48 +118,48 @@ $page = 'dashboard';
 
             <nav class="px-4">
                 <a href="dashboard.php" class="flex items-center px-4 py-3 mb-2 rounded-lg bg-purple-600 text-white">
-                    <span class="mr-3">📊</span>
+                    <!-- <span class="mr-3">📊</span> -->
                     <span>Dashboard</span>
                 </a>
 
                 <a href="admin.php?page=bookings"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    <span class="mr-3">📅</span>
+                    <!-- <span class="mr-3">📅</span> -->
                     <span>Kelola Booking</span>
                 </a>
 
                 <a href="categories.php"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    <span class="mr-3">🏷️</span>
+                    <!-- <span class="mr-3">🏷️</span> -->
                     <span>Kelola Kategori</span>
                 </a>
 
                 <a href="admin.php?page=treatments"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    <span class="mr-3">💆</span>
+                    <!-- <span class="mr-3">💆</span> -->
                     <span>Kelola Treatment</span>
                 </a>
 
                 <a href="therapists.php"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    <span class="mr-3">👨‍⚕️</span>
+                    <!-- <span class="mr-3">👨‍⚕️</span> -->
                     <span>Kelola Terapis</span>
                 </a>
 
                 <a href="admin.php?page=members"
                     class="flex items-center px-4 py-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    <span class="mr-3">👥</span>
+                    <!-- <span class="mr-3">👥</span> -->
                     <span>Kelola Member</span>
                 </a>
             </nav>
 
             <div class="px-4 mt-8 pt-8 border-t">
                 <a href="../index.php" class="flex items-center px-4 py-3 mb-2 text-gray-700 rounded-lg hover:bg-gray-100">
-                    <span class="mr-3">🏠</span>
+                    <!-- <span class="mr-3">🏠</span> -->
                     <span>Halaman Utama</span>
                 </a>
                 <a href="../logout.php" class="flex items-center px-4 py-3 text-red-600 rounded-lg hover:bg-red-50">
-                    <span class="mr-3">🚪</span>
+                    <!-- <span class="mr-3">🚪</span> -->
                     <span>Logout</span>
                 </a>
             </div>
