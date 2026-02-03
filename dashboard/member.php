@@ -363,17 +363,23 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                                         
                                         // Status Pembayaran
                                         if($h['is_paid'] == 1) {
-                                            echo "<span class='inline-flex items-center gap-2 text-green-600 font-semibold text-sm'>
-                                                    <i class='fas fa-check-circle'></i> Lunas
-                                                  </span>";
+                                            echo "<div class='flex flex-col gap-1'>
+                                                    <span class='inline-flex items-center gap-2 text-green-600 font-semibold text-sm'>
+                                                        <i class='fas fa-check-circle'></i> DP Lunas
+                                                    </span>
+                                                    <span class='text-xs text-gray-500'>Rp 50.000</span>
+                                                  </div>";
                                         } elseif ($h['payment_status'] == 'pending') {
                                             echo "<span class='inline-flex items-center gap-2 text-orange-600 font-semibold text-sm'>
                                                     <i class='fas fa-hourglass-half'></i> Menunggu Konfirmasi
                                                   </span>";
                                         } else {
-                                            echo "<span class='inline-flex items-center gap-2 text-red-600 font-semibold text-sm'>
-                                                    <i class='fas fa-times-circle'></i> Belum Bayar
-                                                  </span>";
+                                            echo "<div class='flex flex-col gap-1'>
+                                                    <span class='inline-flex items-center gap-2 text-red-600 font-semibold text-sm'>
+                                                        <i class='fas fa-times-circle'></i> Belum Bayar DP
+                                                    </span>
+                                                    <span class='text-xs text-gray-500'>DP: Rp 50.000</span>
+                                                  </div>";
                                         }
                                 
                                 echo "</td>
@@ -395,9 +401,11 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                                                             <i class='fas fa-info-circle'></i> Menunggu Verifikasi
                                                           </span>";
                                                 } else {
-                                                    echo "<a href='payment.php?id={$h['id']}&amount={$h['price']}' 
+                                                    // DP tetap 50.000 untuk semua treatment
+                                                    $dp_amount = 50000;
+                                                    echo "<a href='payment.php?id={$h['id']}&amount=$dp_amount&full_price={$h['price']}' 
                                                             class='inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-all'>
-                                                            <i class='fas fa-credit-card'></i> Bayar Sekarang
+                                                            <i class='fas fa-credit-card'></i> Bayar DP (Rp 50rb)
                                                           </a>";
                                                 }
                                             }
@@ -515,11 +523,13 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                     <div class="flex items-start">
                         <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
                         <div class="text-sm text-blue-800">
-                            <p class="font-semibold mb-1">Catatan Penting:</p>
+                            <p class="font-semibold mb-1">Ketentuan Pembayaran DP:</p>
                             <ul class="list-disc list-inside space-y-1 text-xs">
-                                <li>Pastikan memilih jadwal yang sesuai dengan ketersediaan Anda</li>
-                                <li>Anda dapat langsung melakukan pembayaran setelah booking</li>
-                                <li>Admin akan mengonfirmasi pembayaran Anda dalam 1x24 jam</li>
+                                <li><strong>DP sebesar Rp 50.000</strong> untuk semua treatment</li>
+                                <li>DP dapat dibayar langsung setelah booking</li>
+                                <li><strong class="text-red-600">DP HANGUS jika tidak datang sesuai jadwal</strong></li>
+                                <li>Sisa pembayaran dilunasi saat treatment selesai</li>
+                                <li>Admin akan mengonfirmasi DP dalam 1x24 jam</li>
                             </ul>
                         </div>
                     </div>

@@ -3,7 +3,16 @@ require '../config.php';
 checkAccess('member');
 
 $booking_id = $_GET['id'];
-$amount = $_GET['amount'];
+$amount = $_GET['amount']; // DP 50.000
+$full_price = $_GET['full_price'] ?? $amount; // Harga penuh treatment
+
+// Get booking details
+$stmt = $pdo->prepare("SELECT b.*, t.name as treatment_name, t.price 
+                       FROM bookings b 
+                       JOIN treatments t ON b.treatment_id = t.id 
+                       WHERE b.id = ?");
+$stmt->execute([$booking_id]);
+$booking = $stmt->fetch();
 ?>
 
 <!DOCTYPE html>
@@ -59,10 +68,20 @@ $amount = $_GET['amount'];
                             </path>
                         </svg>
                     </div>
-                    <h1 class="text-2xl md:text-3xl font-bold mb-2">Pilih Metode Pembayaran</h1>
-                    <p class="text-purple-100">Total Tagihan:</p>
-                    <p class="text-3xl md:text-4xl font-bold mt-2">Rp <?php echo number_format($amount, 0, ',', '.'); ?>
-                    </p>
+                    <h1 class="text-2xl md:text-3xl font-bold mb-2">Pembayaran DP (Down Payment)</h1>
+                    <p class="text-purple-100 text-sm mb-1">Treatment: <?php echo $booking['treatment_name']; ?></p>
+                    <p class="text-purple-100 text-sm mb-3">Harga Treatment: Rp <?php echo number_format($booking['price'], 0, ',', '.'); ?></p>
+                    
+                    <div class="bg-purple-700 rounded-xl p-4 inline-block">
+                        <p class="text-purple-200 text-sm mb-1">Bayar DP Sekarang:</p>
+                        <p class="text-4xl md:text-5xl font-bold">Rp 50.000</p>
+                        <p class="text-purple-200 text-xs mt-2">Sisa: Rp <?php echo number_format($booking['price'] - 50000, 0, ',', '.'); ?> (Bayar saat treatment)</p>
+                    </div>
+                    
+                    <div class="mt-4 bg-red-500 rounded-lg p-3">
+                        <p class="text-sm font-bold">⚠️ PERHATIAN: DP HANGUS JIKA TIDAK DATANG!</p>
+                        <p class="text-xs mt-1">Pastikan Anda bisa hadir sesuai jadwal booking</p>
+                    </div>
                 </div>
 
                 <!-- Form -->
@@ -151,15 +170,23 @@ $amount = $_GET['amount'];
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    Petunjuk Pembayaran
+                    Ketentuan Pembayaran DP
                 </h3>
-                <ol class="list-decimal list-inside space-y-2 text-sm text-gray-600">
-                    <li>Pilih metode pembayaran yang Anda inginkan</li>
-                    <li>Transfer sesuai nominal yang tertera</li>
+                <ol class="list-decimal list-inside space-y-2 text-sm text-gray-600 mb-4">
+                    <li>Pilih metode pembayaran (BCA atau QRIS)</li>
+                    <li><strong>Transfer DP sebesar Rp 50.000</strong></li>
                     <li>Upload bukti transfer (screenshot/foto)</li>
-                    <li>Tunggu konfirmasi dari admin (maksimal 1x24 jam)</li>
-                    <li>Status pembayaran akan diperbarui di dashboard Anda</li>
+                    <li>Tunggu konfirmasi admin (maksimal 1x24 jam)</li>
+                    <li><strong>Bayar sisa saat treatment selesai</strong></li>
                 </ol>
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                    <p class="font-bold text-red-700 mb-1">⚠️ KEBIJAKAN DP:</p>
+                    <ul class="text-xs text-red-600 space-y-1">
+                        <li>• <strong>DP HANGUS</strong> jika Anda tidak datang sesuai jadwal booking</li>
+                        <li>• DP tidak dapat dikembalikan dalam kondisi apapun</li>
+                        <li>• Pastikan Anda benar-benar bisa hadir sebelum membayar DP</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

@@ -422,27 +422,31 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                         <!-- Pembayaran -->
                                         <td class="px-4 py-4">
                                             <?php if ($paySt == 'paid'): ?>
-                                                <div class="flex items-center">
+                                                <div class="flex flex-col gap-1">
                                                     <span
                                                         class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-300">
-                                                        ✓ LUNAS
+                                                        ✓ DP LUNAS
                                                     </span>
+                                                    <span class="text-xs text-gray-500">Rp 50.000</span>
                                                 </div>
                                             <?php elseif ($row['proof_image']): ?>
                                                 <div class="flex flex-col gap-1">
                                                     <a href="../assets/uploads/<?= $row['proof_image'] ?>" target="_blank"
                                                         class="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg hover:bg-blue-100 border border-blue-200 transition-colors">
-                                                        Lihat Bukti
+                                                        Lihat Bukti DP
                                                     </a>
                                                     <?php if ($paySt == 'pending'): ?>
                                                         <span
                                                             class="px-2 py-1 bg-orange-50 text-orange-600 text-xs font-semibold rounded border border-orange-200">
-                                                            Perlu Validasi
+                                                            Perlu Validasi DP
                                                         </span>
                                                     <?php endif; ?>
                                                 </div>
                                             <?php else: ?>
-                                                <span class="text-gray-400 text-sm">Belum Upload</span>
+                                                <div class="flex flex-col gap-1">
+                                                    <span class="text-gray-400 text-sm">Belum Upload DP</span>
+                                                    <span class="text-xs text-gray-400">DP: Rp 50.000</span>
+                                                </div>
                                             <?php endif; ?>
                                         </td>
 
