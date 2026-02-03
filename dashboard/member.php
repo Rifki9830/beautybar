@@ -388,11 +388,11 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                                                       </a>";
                                             }
                                             
-                                            // Tombol Aksi Pembayaran
-                                            if($h['status'] == 'confirmed' && $h['is_paid'] == 0) {
+                                            // Tombol Aksi Pembayaran - Muncul langsung setelah booking
+                                            if($h['status'] != 'cancelled' && $h['status'] != 'completed' && $h['is_paid'] == 0) {
                                                 if($h['payment_status'] == 'pending') {
                                                     echo "<span class='text-xs text-gray-500 italic'>
-                                                            <i class='fas fa-info-circle'></i> Sedang dicek admin
+                                                            <i class='fas fa-info-circle'></i> Menunggu Verifikasi
                                                           </span>";
                                                 } else {
                                                     echo "<a href='payment.php?id={$h['id']}&amount={$h['price']}' 
@@ -518,8 +518,8 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                             <p class="font-semibold mb-1">Catatan Penting:</p>
                             <ul class="list-disc list-inside space-y-1 text-xs">
                                 <li>Pastikan memilih jadwal yang sesuai dengan ketersediaan Anda</li>
-                                <li>Booking akan dikonfirmasi oleh admin dalam 1x24 jam</li>
-                                <li>Pembayaran dapat dilakukan setelah booking dikonfirmasi</li>
+                                <li>Anda dapat langsung melakukan pembayaran setelah booking</li>
+                                <li>Admin akan mengonfirmasi pembayaran Anda dalam 1x24 jam</li>
                             </ul>
                         </div>
                     </div>
