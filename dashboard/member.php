@@ -1,5 +1,5 @@
 <?php
-require '../config.php';
+require __DIR__ . '/../config.php';
 checkAccess('member');
 
 $msg = "";
@@ -380,7 +380,15 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                                         <td class='py-4 px-6'>
                                             <div class='flex flex-col gap-2'>";
                                             
-                                            // Tombol Aksi
+                                            // Tombol Reschedule - Untuk booking pending atau confirmed
+                                            if($h['status'] == 'pending' || $h['status'] == 'confirmed') {
+                                                echo "<a href='member_reschedule.php?id={$h['id']}' 
+                                                        class='inline-flex items-center justify-center gap-2 px-4 py-2 bg-orange-600 text-white text-xs font-semibold rounded-lg hover:bg-orange-700 transition-all'>
+                                                        <i class='fas fa-calendar-alt'></i> Ganti Jadwal
+                                                      </a>";
+                                            }
+                                            
+                                            // Tombol Aksi Pembayaran
                                             if($h['status'] == 'confirmed' && $h['is_paid'] == 0) {
                                                 if($h['payment_status'] == 'pending') {
                                                     echo "<span class='text-xs text-gray-500 italic'>

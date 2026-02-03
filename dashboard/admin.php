@@ -435,7 +435,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
             <div class="mb-4 md:mb-6">
                 <button onclick="openModal()"
                     class="w-full md:w-auto px-4 md:px-6 py-2 md:py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-md text-sm md:text-base">
-                    ➕ Tambah Treatment Baru
+                    Tambah Treatment Baru
                 </button>
             </div>
 
@@ -445,7 +445,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                     <div class="flex items-center justify-between p-4 md:p-6 border-b sticky top-0 bg-white">
                         <h3 id="modalTitle" class="text-lg md:text-xl font-semibold text-gray-800">
-                            ➕ Tambah Treatment Baru
+                            Tambah Treatment Baru
                         </h3>
                         <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -589,12 +589,12 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                         <td class='px-3 md:px-6 py-3 md:py-4 text-xs'>
                                             <button onclick='editTreatment({$t['id']}, \"" . addslashes($t['name']) . "\", {$t['price']}, {$t['duration']}, " . ($t['category_id'] ?: 'null') . ")' 
                                                class='inline-block px-2 md:px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-1 mb-1'>
-                                                ✏️
+                                                Edit
                                             </button>
                                             <a href='?page=treatments&delete_treatment={$t['id']}' 
                                                onclick='return confirm(\"Yakin hapus?\")' 
                                                class='inline-block px-2 md:px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'>
-                                                🗑️
+                                                Hapus
                                             </a>
                                         </td>
                                     </tr>";
@@ -648,12 +648,12 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                                 <a href='?page=members&reset_member={$m['id']}' 
                                                    onclick='return confirm(\"Reset password member ini menjadi: password ?\")' 
                                                    class='inline-block px-2 md:px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 mr-1 mb-1'>
-                                                    🔒
+                                                    Reset Pw
                                                 </a>
                                                 <a href='?page=members&delete_member={$m['id']}' 
                                                    onclick='return confirm(\"Yakin hapus member ini? Data tidak bisa kembali.\")' 
                                                    class='inline-block px-2 md:px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'>
-                                                    🗑️
+                                                    Hapus
                                                 </a>
                                             </td>
                                         </tr>";

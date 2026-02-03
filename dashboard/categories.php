@@ -156,7 +156,7 @@ $categories = $pdo->query("
 
             <!-- Form Add Category -->
             <div class="bg-white rounded-xl shadow-md p-4 md:p-6 mb-4 md:mb-6">
-                <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">➕ Tambah Kategori Baru</h2>
+                <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Tambah Kategori Baru</h2>
 
                 <form method="POST" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -173,7 +173,7 @@ $categories = $pdo->query("
 
                     <div class="flex gap-2">
                         <button type="submit" name="add_category" class="w-full md:w-auto px-4 md:px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium text-sm md:text-base">
-                            ➕ Tambah Kategori
+                            Tambah Kategori
                         </button>
                     </div>
                 </form>
@@ -182,7 +182,7 @@ $categories = $pdo->query("
             <!-- Categories List -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="px-4 md:px-6 py-3 md:py-4 border-b bg-gradient-to-r from-purple-50 to-purple-100">
-                    <h2 class="text-lg md:text-xl font-bold text-gray-800">📋 Daftar Kategori</h2>
+                    <h2 class="text-lg md:text-xl font-bold text-gray-800">Daftar Kategori</h2>
                 </div>
 
                 <?php if (count($categories) > 0): ?>
@@ -198,14 +198,14 @@ $categories = $pdo->query("
 
                                 <div class="flex items-center justify-between pt-3 border-t border-gray-100">
                                     <span class="text-xs md:text-sm text-gray-600">
-                                        💆 <strong><?php echo $cat['treatment_count']; ?></strong> Treatment
+                                        <strong><?php echo $cat['treatment_count']; ?></strong> Treatment
                                     </span>
                                     <div class="flex gap-1 md:gap-2">
                                         <button onclick="openEditModal(<?php echo $cat['id']; ?>, '<?php echo htmlspecialchars($cat['name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($cat['description'], ENT_QUOTES); ?>')" class="px-2 md:px-3 py-1 bg-blue-500 text-white text-xs md:text-sm rounded hover:bg-blue-600">
-                                            ✏️
+                                            Edit
                                         </button>
                                         <a href="?delete=<?php echo $cat['id']; ?>" onclick="return confirm('Yakin hapus kategori ini?\nTreatment yang menggunakan kategori ini akan menjadi tanpa kategori.')" class="px-2 md:px-3 py-1 bg-red-500 text-white text-xs md:text-sm rounded hover:bg-red-600">
-                                            🗑️
+                                            Hapus
                                         </a>
                                     </div>
                                 </div>
@@ -248,7 +248,7 @@ $categories = $pdo->query("
 
                 <div class="flex flex-col md:flex-row gap-2 pt-4">
                     <button type="submit" name="edit_category" class="flex-1 px-4 md:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm md:text-base">
-                        💾 Update Kategori
+                        Update Kategori
                     </button>
                     <button type="button" onclick="closeEditModal()" class="px-4 md:px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium text-sm md:text-base">
                         Batal

@@ -15,7 +15,7 @@ if (isset($_POST['login'])) {
         $_SESSION['name']    = $user['username'];
 
         // Redirect sesuai Role
-        if ($user['role'] == 'admin') header("Location: dashboard/admin.php");
+        if ($user['role'] == 'admin') header("Location: dashboard/dashboard.php");
         else if ($user['role'] == 'owner') header("Location: dashboard/owner.php");
         else header("Location: dashboard/member.php");
         exit;

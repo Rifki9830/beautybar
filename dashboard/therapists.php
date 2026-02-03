@@ -124,11 +124,11 @@ $therapists = $pdo->query("
     <script>
         function openModal() {
             document.getElementById('therapistModal').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = '➕ Tambah Terapis Baru';
+            document.getElementById('modalTitle').textContent = 'Tambah Terapis Baru';
             document.getElementById('therapistForm').reset();
             document.getElementById('therapistId').value = '';
             document.getElementById('submitBtn').name = 'add_therapist';
-            document.getElementById('submitBtn').textContent = '➕ Tambah Terapis';
+            document.getElementById('submitBtn').textContent = 'Tambah Terapis';
             document.getElementById('imagePreview').classList.add('hidden');
         }
 
@@ -138,13 +138,13 @@ $therapists = $pdo->query("
 
         function editTherapist(id, name, phone, specialization, image) {
             document.getElementById('therapistModal').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = '✏️ Edit Terapis';
+            document.getElementById('modalTitle').textContent = 'Edit Terapis';
             document.getElementById('therapistId').value = id;
             document.getElementById('therapistName').value = name;
             document.getElementById('therapistPhone').value = phone;
             document.getElementById('therapistSpecialization').value = specialization;
             document.getElementById('submitBtn').name = 'edit_therapist';
-            document.getElementById('submitBtn').textContent = '💾 Update Terapis';
+            document.getElementById('submitBtn').textContent = 'Update Terapis';
             
             if (image) {
                 document.getElementById('previewImg').src = '../assets/uploads/' + image;
@@ -262,7 +262,7 @@ $therapists = $pdo->query("
             <div class="mb-4 md:mb-6">
                 <button onclick="openModal()"
                     class="w-full md:w-auto px-4 md:px-6 py-2 md:py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-md text-sm md:text-base">
-                    ➕ Tambah Terapis Baru
+                    Tambah Terapis Baru
                 </button>
             </div>
 
@@ -272,7 +272,7 @@ $therapists = $pdo->query("
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                     <div class="flex items-center justify-between p-4 md:p-6 border-b sticky top-0 bg-white">
                         <h3 id="modalTitle" class="text-lg md:text-xl font-semibold text-gray-800">
-                            ➕ Tambah Terapis Baru
+                            Tambah Terapis Baru
                         </h3>
                         <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -338,7 +338,7 @@ $therapists = $pdo->query("
                             </button>
                             <button type="submit" id="submitBtn" name="add_therapist"
                                 class="w-full md:w-auto px-4 md:px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium text-sm md:text-base">
-                                ➕ Tambah Terapis
+                                Tambah Terapis
                             </button>
                         </div>
                     </form>
@@ -348,7 +348,7 @@ $therapists = $pdo->query("
             <!-- Therapists List -->
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="px-4 md:px-6 py-3 md:py-4 border-b bg-gradient-to-r from-purple-50 to-purple-100">
-                    <h2 class="text-lg md:text-xl font-bold text-gray-800">👨‍⚕️ Daftar Terapis</h2>
+                    <h2 class="text-lg md:text-xl font-bold text-gray-800">Daftar Terapis</h2>
                 </div>
 
                 <?php if (count($therapists) > 0): ?>
@@ -374,12 +374,10 @@ $therapists = $pdo->query("
                                     
                                     <div class="space-y-2 mb-4">
                                         <div class="flex items-center text-xs md:text-sm text-gray-600">
-                                            <span class="mr-2">📱</span>
                                             <span class="truncate"><?php echo htmlspecialchars($therapist['phone']); ?></span>
                                         </div>
                                         
                                         <div class="flex items-start text-xs md:text-sm text-gray-600">
-                                            <span class="mr-2 mt-1">💼</span>
                                             <span class="flex-1 line-clamp-2"><?php echo htmlspecialchars($therapist['specialization']); ?></span>
                                         </div>
                                     </div>
@@ -396,12 +394,12 @@ $therapists = $pdo->query("
                                                 "<?php echo htmlspecialchars($therapist['specialization'], ENT_QUOTES); ?>",
                                                 "<?php echo $therapist['image']; ?>"
                                             )' class="px-2 md:px-3 py-1 bg-blue-500 text-white text-xs md:text-sm rounded hover:bg-blue-600">
-                                                ✏️
+                                                Edit
                                             </button>
                                             <a href="?delete=<?php echo $therapist['id']; ?>" 
                                                onclick="return confirm('Yakin hapus terapis ini?\nData booking terkait akan terpengaruh.')" 
                                                class="px-2 md:px-3 py-1 bg-red-500 text-white text-xs md:text-sm rounded hover:bg-red-600">
-                                                🗑️
+                                                Hapus
                                             </a>
                                         </div>
                                     </div>
