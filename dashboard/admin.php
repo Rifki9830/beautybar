@@ -14,7 +14,8 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
     } elseif ($act == 'complete') {
         $pdo->prepare("UPDATE bookings SET status='completed' WHERE id=?")->execute([$id]);
     } elseif ($act == 'confirm_pay') {
-        $pdo->prepare("UPDATE bookings SET is_paid=1 WHERE id=?")->execute([$id]);
+        // Konfirmasi pembayaran dan auto-approve booking jika masih pending
+        $pdo->prepare("UPDATE bookings SET is_paid=1, status=CASE WHEN status='pending' THEN 'confirmed' ELSE status END WHERE id=?")->execute([$id]);
         $pdo->prepare("UPDATE transactions SET payment_status='paid' WHERE booking_id=?")->execute([$id]);
     }
 
@@ -461,11 +462,11 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'bookings';
                                                     </a>
                                                 <?php endif; ?>
 
-                                                <?php if ($row['proof_image'] && $paySt == 'pending' && $st == 'confirmed'): ?>
+                                                <?php if ($row['proof_image'] && $paySt == 'pending' && $st != 'cancelled' && $st != 'completed'): ?>
                                                     <a href="?page=bookings&action=confirm_pay&id=<?= $row['id'] ?>"
                                                         class="px-3 py-1.5 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-xs font-semibold"
                                                         title="Konfirmasi Pembayaran">
-                                                        Validasi
+                                                        Validasi Bayar
                                                     </a>
                                                 <?php endif; ?>
 
