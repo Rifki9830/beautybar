@@ -413,7 +413,7 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                                                     $dp_amount = 50000;
                                                     echo "<a href='payment.php?id={$h['id']}&amount=$dp_amount&full_price={$h['price']}' 
                                                             class='inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-all'>
-                                                            <i class='fas fa-credit-card'></i> Bayar DP (Rp 50rb)
+                                                            Bayar DP (Rp 50rb)
                                                           </a>";
                                                 }
                                             }
