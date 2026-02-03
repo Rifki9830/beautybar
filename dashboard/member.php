@@ -10,16 +10,24 @@ if (isset($_POST['booking'])) {
     $time     = $_POST['time'];
     $uid      = $_SESSION['user_id'];
 
-    // Validasi: Cek apakah Terapis sibuk di jam & tanggal itu
-    $check = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE therapist_id=? AND booking_date=? AND booking_time=? AND status != 'cancelled'");
-    $check->execute([$ther_id, $date, $time]);
+    // Validasi: Cek apakah tanggal dan waktu sudah lewat
+    $bookingDateTime = $date . ' ' . $time;
+    $currentDateTime = date('Y-m-d H:i');
     
-    if ($check->fetchColumn() > 0) {
-        $msg = "error|Maaf! Terapis sudah dibooking pada jam tersebut. Pilih jam lain!";
+    if ($bookingDateTime < $currentDateTime) {
+        $msg = "error|Tidak bisa booking pada waktu yang sudah lewat! Pilih tanggal/jam yang masih tersedia.";
     } else {
-        $sql = "INSERT INTO bookings (user_id, treatment_id, therapist_id, booking_date, booking_time) VALUES (?,?,?,?,?)";
-        $pdo->prepare($sql)->execute([$uid, $treat_id, $ther_id, $date, $time]);
-        $msg = "success|Booking Anda telah dibuat. Menunggu konfirmasi admin.";
+        // Validasi: Cek apakah Terapis sibuk di jam & tanggal itu
+        $check = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE therapist_id=? AND booking_date=? AND booking_time=? AND status != 'cancelled'");
+        $check->execute([$ther_id, $date, $time]);
+        
+        if ($check->fetchColumn() > 0) {
+            $msg = "error|Maaf! Terapis sudah dibooking pada jam tersebut. Pilih jam lain!";
+        } else {
+            $sql = "INSERT INTO bookings (user_id, treatment_id, therapist_id, booking_date, booking_time) VALUES (?,?,?,?,?)";
+            $pdo->prepare($sql)->execute([$uid, $treat_id, $ther_id, $date, $time]);
+            $msg = "success|Booking Anda telah dibuat. Menunggu konfirmasi admin.";
+        }
     }
 }
 
@@ -605,6 +613,76 @@ $totalSpent = $totalSpent->fetchColumn() ?? 0;
                 closeModal();
             }
         });
+
+        // VALIDASI TANGGAL DAN WAKTU 
+    const bookingForm = document.querySelector('form[method="POST"]');
+    const dateInput = document.querySelector('input[name="date"]');
+    const timeSelect = document.querySelector('select[name="time"]');
+
+    // Fungsi untuk disable jam yang sudah lewat jika pilih hari ini
+    function updateAvailableTimes() {
+        const selectedDate = dateInput.value;
+        const today = new Date().toISOString().split('T')[0];
+        const currentHour = new Date().getHours();
+        
+        if (selectedDate === today) {
+            // Jika pilih hari ini, disable jam yang sudah lewat
+            const options = timeSelect.querySelectorAll('option');
+            options.forEach(option => {
+                if (option.value) {
+                    const optionHour = parseInt(option.value.split(':')[0]);
+                    if (optionHour <= currentHour) {
+                        option.disabled = true;
+                        option.style.color = '#ccc';
+                    } else {
+                        option.disabled = false;
+                        option.style.color = '';
+                    }
+                }
+            });
+            
+            // Reset pilihan jika jam yang dipilih sudah lewat
+            if (timeSelect.value) {
+                const selectedHour = parseInt(timeSelect.value.split(':')[0]);
+                if (selectedHour <= currentHour) {
+                    timeSelect.value = '';
+                }
+            }
+        } else {
+            // Jika pilih tanggal lain, enable semua jam
+            const options = timeSelect.querySelectorAll('option');
+            options.forEach(option => {
+                option.disabled = false;
+                option.style.color = '';
+            });
+        }
+    }
+
+    // Update available times saat tanggal berubah
+    if (dateInput && timeSelect) {
+        dateInput.addEventListener('change', updateAvailableTimes);
+        
+        // Validasi saat form disubmit
+        bookingForm.addEventListener('submit', function(e) {
+            const selectedDate = dateInput.value;
+            const selectedTime = timeSelect.value;
+            
+            if (!selectedDate || !selectedTime) {
+                return; // Biarkan HTML5 validation handle ini
+            }
+            
+            // Gabungkan tanggal dan waktu
+            const bookingDateTime = new Date(selectedDate + ' ' + selectedTime);
+            const currentDateTime = new Date();
+            
+            // Cek apakah booking di waktu yang sudah lewat
+            if (bookingDateTime <= currentDateTime) {
+                e.preventDefault();
+                alert('⚠️ Tidak bisa booking pada waktu yang sudah lewat! Pilih tanggal/jam yang masih tersedia.');
+                return false;
+            }
+        });
+    }
 
         // Auto-hide alert after 5 seconds
         const alert = document.querySelector('.alert-animate');

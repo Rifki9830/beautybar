@@ -35,10 +35,12 @@ if (isset($_POST['reschedule'])) {
     $new_time = $_POST['new_time'];
     $therapist_id = $_POST['therapist_id'];
     
-    // Validasi: Cek apakah tanggal baru tidak mundur dari hari ini
-    $today = date('Y-m-d');
-    if ($new_date < $today) {
-        $msg = "error|Tidak bisa memilih tanggal yang sudah lewat! Pilih tanggal hari ini atau ke depan.";
+    // Validasi: Cek apakah tanggal dan waktu baru tidak mundur dari sekarang
+    $newDateTime = $new_date . ' ' . $new_time;
+    $currentDateTime = date('Y-m-d H:i');
+    
+    if ($newDateTime < $currentDateTime) {
+        $msg = "error|Tidak bisa memilih waktu yang sudah lewat! Pilih tanggal/jam yang masih tersedia.";
     } else {
         // Validasi: Cek apakah terapis sibuk di jam & tanggal baru
         $check = $pdo->prepare("SELECT COUNT(*) FROM bookings 
